@@ -60,6 +60,7 @@
 
   function isCustomSelectRoot(el) {
     if (el.matches(CUSTOM_SELECT_SEL)) return true;
+    if (typeof el.className === 'string' && /(^|\s)sd-Select-container/.test(el.className)) return true;  // Moka
     return typeof el.className === 'string' && CUSTOM_SELECT_CLASS.test(el.className);
   }
 
@@ -117,7 +118,7 @@
     });
 
     // 自定义下拉
-    document.querySelectorAll(CUSTOM_SELECT_SEL + ', [class*="-select"]').forEach((el) => {
+    document.querySelectorAll(CUSTOM_SELECT_SEL + ', [class*="-select"], [class*="Select-container"]').forEach((el) => {
       if (!isCustomSelectRoot(el) || el.tagName === 'SELECT') return;
       const root = outermostCustomSelect(el);
       if (!root || seen.has(root) || inSeen(root) || !visible(root)) return;
@@ -243,6 +244,8 @@
     let ctl = root;
     for (let c = root.parentElement, i = 0; c && i < 6; c = c.parentElement, i++) {
       if (c.querySelectorAll('[' + ATTR + ']').length > 1) break;
+      // 容器里带着标题（Moka：apply-field Select 里有 .title「性别」）就是整个表单项了，不能算进控件
+      if (c.querySelector('[class*="title"], [class*="Title"], legend')) break;
       if (/select|picker|cascader|combobox/i.test(typeof c.className === 'string' ? c.className : '')) ctl = c;
     }
     let a = root.parentElement;
@@ -329,6 +332,7 @@
     }
     if (c.kind === 'radio') return clean((c.radios.find((r) => r.checked) && radioLabel(c.radios.find((r) => r.checked))) || '');
     if (c.kind === 'checkbox') return el.checked ? 'true' : '';
+    if ((c.kind === 'date_range' || c.kind === 'date_picker') && yearMonthSelects(el).length >= 2) return readYearMonth(el);
     if (c.kind === 'date_range') return [...el.querySelectorAll('input')].map((i) => i.value).filter(Boolean).join(' ~ ');
     if (c.kind === 'date_picker' && el.tagName !== 'INPUT') return el.querySelector('input')?.value || '';
     if (c.kind === 'custom_select' || c.kind === 'cascader') {
@@ -890,15 +894,20 @@
   function readPanel(panel) {
     const headers = [...panel.querySelectorAll('[class*="header"]')]
       .filter((h) => visible(h) && !h.querySelector('td, [class*="cell"]'));
-    let header = headers.find((h) => /\d{4}/.test(h.innerText)) || headers[0] || null;
+    let header = headers.find((h) => /\d{4}/.test(h.innerText)) || null;
     if (!header) {
-      // 标题没有叫 header 的类（Moka：sd-basic-selector）：以「2000年」「2000年5月」那一小块文字所在的条为标题
+      // 标题里没有叫 header 的类（Moka：sd-basic-selector），或 header 匹配到的是「一二三四五六日」那一行（sd-basic-date-header）：
+      // 以「2000年」「2000年5月」那一小块文字所在的条为标题
       const yl = [...panel.querySelectorAll('*')].find((e) => !e.children.length && /^\d{4}\s*年(\s*\d{1,2}\s*月)?$/.test(clean(e.innerText)));
-      header = yl ? (yl.closest('[class*="selector"]') || yl.parentElement) : panel;
+      header = yl ? (yl.parentElement.closest('[class*="selector"]') || yl.parentElement) : (headers[0] || panel);
     }
     const ht = clean(header.innerText);
     const hy = ht.match(/(\d{4})/);
     let hm = ht.match(/(\d{1,2})\s*月/);
+    if (!hm) {  // 汉字月份：「2026年 十月」（Moka 日期面板）
+      const cn = ht.match(/(十[一二]?|[一二三四五六七八九])\s*月/);
+      if (cn) hm = [0, CN_MONTH.indexOf(cn[1]) + 1];
+    }
     if (!hm) { const k = EN_MONTH.findIndex((x) => ht.toLowerCase().includes(x)); hm = k >= 0 ? [0, k + 1] : null; }
     // 范围选择器有左右两块面板，只看第一块
     let sub = header.parentElement;
@@ -909,7 +918,7 @@
     const cellCls = (e) => (e.closest('td, [class*="cell"]') || e).className || '';
     const inView = leaves.some((e) => /in-view/.test(cellCls(e)));
     const days = leaves.filter((e) => /^\d{1,2}$/.test(clean(e.innerText))
-      && (inView ? /in-view/.test(cellCls(e)) : !/prev|next|other|disabled|outside|last-month|adjacent/.test(cellCls(e))));
+      && (inView ? /in-view/.test(cellCls(e)) : !/prev|next|other|disabled|outside|last-month|adjacent|fade/.test(cellCls(e))));
     return {
       year: hy ? +hy[1] : null,
       month: hm ? +hm[1] : null,
@@ -918,8 +927,8 @@
       days,
       prevYear: buttonIn(panel, /super-prev|prev-year|d-arrow-left|double-?left|year-prev|prevyear/i, /上一年|previous year/i, ['«']),
       nextYear: buttonIn(panel, /super-next|next-year|d-arrow-right|double-?right|year-next|nextyear/i, /下一年|next year/i, ['»']),
-      prevMonth: buttonIn(panel, /(^|[\s_-])prev(-btn|-month|$|\s)|arrow-left|month-prev/i, /上个月|上一月|previous month/i, ['‹', '<'], true),
-      nextMonth: buttonIn(panel, /(^|[\s_-])next(-btn|-month|$|\s)|arrow-right|month-next/i, /下个月|下一月|next month/i, ['›', '>'], true),
+      prevMonth: buttonIn(panel, /(^|[\s_-])prev(-btn|-month|-tool|$|\s)|arrow-left|month-prev|icon-?left(\s|$)/i, /上个月|上一月|previous month/i, ['‹', '<'], true),
+      nextMonth: buttonIn(panel, /(^|[\s_-])next(-btn|-month|-tool|$|\s)|arrow-right|month-next|icon-?right(\s|$)/i, /下个月|下一月|next month/i, ['›', '>'], true),
       yearLabel: [...header.querySelectorAll('*')].find((e) => /^\d{4}\s*年?$/.test(clean(e.innerText)) && !e.children.length) || null,
     };
   }
@@ -1030,10 +1039,21 @@
   // 年 / 月是两个下拉框（占位文字「年」「月」）：依次打开、选中。每个下拉复用普通下拉的打开 / 搜索 / 核对逻辑
   function yearMonthSelects(root) {
     if (!root || root.tagName === 'INPUT') return [];
-    return [...root.querySelectorAll('[class*="Select-container"]')].filter((s) => {
-      const i = s.querySelector('input');
-      return i && /^(年|月)$/.test((i.getAttribute('placeholder') || '').trim());
-    });
+    // 按结构认：站点用简历解析预先填好后，输入框的 placeholder 会变成空，不能再靠「年」「月」二字（众安 / SHEIN 2026-10-09）
+    return [...root.querySelectorAll('[class*="Select-container"]')].filter((s) => s.querySelector('input'));
+  }
+
+  // 页面上已选的年月 → "2025-09" 或 "2025-09 ~ 2026-12"
+  function readYearMonth(root) {
+    const sels = yearMonthSelects(root);
+    const shown = sels.map((s) => clean((s.querySelector('[class*="display-value"]') || {}).innerText || (s.querySelector('input') || {}).value || ''));
+    const out = [];
+    for (let k = 0; k + 1 < shown.length; k += 2) {
+      const y = shown[k].match(/\d{4}/);
+      const m = shown[k + 1].match(/\d{1,2}/);
+      if (y && m) out.push(`${y[0]}-${String(m[0]).padStart(2, '0')}`);
+    }
+    return out.join(' ~ ');
   }
 
   async function fillYearMonth(root, isos) {

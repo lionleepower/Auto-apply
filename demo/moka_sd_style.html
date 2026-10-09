@@ -36,7 +36,16 @@
 
   <div class="sec"><h3 class="sec-h">个人信息</h3>
   <div class="item-row"><input type="text" class="full" placeholder="姓名" data-key="name"></div>
+  <div class="apply-field Select apply-filed-padding"><div class="title"><span><span>性别</span></span><span class="required-asterisk"></span></div>
+    <div class="ctrl"><div class="sd-Tooltip-container w-full"><div class="sd-Dropdown-container" data-key="gender">
+      <label class="sd-Input-container sd-Select-container select no-adaptive sd-Input-lg"><span class="sd-Input-display-value"></span><input type="text" placeholder="请选择" autocomplete="off" data-kind="gender"></label>
+    </div></div></div></div>
+  <div class="apply-field Select apply-filed-padding"><div class="title"><span><span>最高学历</span></span></div>
+    <div class="ctrl"><div class="sd-Tooltip-container w-full"><div class="sd-Dropdown-container" data-key="degree">
+      <label class="sd-Input-container sd-Select-container select no-adaptive sd-Input-lg"><span class="sd-Input-display-value"></span><input type="text" placeholder="请选择" autocomplete="off" data-kind="degree"></label>
+    </div></div></div></div>
   <div class="item-row"><input type="text" class="full" readonly placeholder="出生日期 (年龄)" data-key="birth" id="birth"></div>
+  <div class="item-row"><div class="cap">可到岗实习时间</div><input type="text" class="full" readonly placeholder="日期（年月日）" data-key="avail" id="avail"></div>
   <div class="item-row"><div class="cap">毕业时间</div>
     <div class="month-range date_info" data-key="grad">
       <div class="item-half"><label class="sd-Input-container sd-Select-container"><span class="sd-Input-display-value"></span><input type="text" placeholder="年" autocomplete="off" data-kind="year"></label></div>
@@ -77,7 +86,7 @@
       e.stopPropagation();
       if (owner === lab) return closeDd();
       const d = ensure();
-      const opts = inp.dataset.kind === 'year' ? years : months;
+      const opts = { year: years, month: months, gender: ['男', '女'], degree: ['博士', 'MBA', '硕士', '本科', '大专', '高中'] }[inp.dataset.kind];
       d.innerHTML = '<div class="sd-Select-menu"><div class="sd-Select-scrollable"></div></div>';
       const box = d.querySelector('.sd-Select-scrollable');
       opts.forEach((t) => {
@@ -159,6 +168,67 @@
   });
   document.addEventListener('mousedown', (e) => { if (panel && !panel.contains(e.target) && e.target !== birth) closePanel(); });
 
+  // ---- 日视图面板（SHEIN）：标题「2026年 十月」，上 / 下个月按钮是 prev-tool / next-tool，非本月的格子带 sd-basic-fade ----
+  let dayPanel = null;
+  const avail = document.getElementById('avail');
+  function renderDay(st) {
+    dayPanel.innerHTML = '<div class="sd-panal-menu-wrapper"></div>';
+    const w = dayPanel.firstChild;
+    const head = document.createElement('div');
+    head.className = 'sd-panal-select-container';
+    head.innerHTML = '<div class="sd-basic-selector"><div><span class="sd-Icon-container sd-Icon-icondoubleLeft">«</span>'
+      + '<span class="sd-Icon-container sd-Icon-iconleft sd-basic-selector-prev-tool">‹</span></div>'
+      + '<div class="sd-basic-selector-content"><span class="sd-basic-selector-year"></span><span class="sd-basic-selector-month"></span></div>'
+      + '<div><span class="sd-Icon-container sd-Icon-iconright sd-basic-selector-next-tool">›</span>'
+      + '<span class="sd-Icon-container sd-Icon-icondoubleRight">»</span></div></div>';
+    head.querySelector('.sd-basic-selector-year').textContent = st.year + '年';
+    head.querySelector('.sd-basic-selector-month').textContent = CN[st.month - 1] + '月';
+    const go = (dy, dm) => (e) => {
+      e.stopPropagation();
+      const t = new Date(st.year + dy, st.month - 1 + dm, 1);
+      st.year = t.getFullYear(); st.month = t.getMonth() + 1; renderDay(st);
+    };
+    head.querySelector('.sd-Icon-icondoubleLeft').addEventListener('click', go(-1, 0));
+    head.querySelector('.sd-Icon-icondoubleRight').addEventListener('click', go(1, 0));
+    head.querySelector('.sd-basic-selector-prev-tool').addEventListener('click', go(0, -1));
+    head.querySelector('.sd-basic-selector-next-tool').addEventListener('click', go(0, 1));
+    w.appendChild(head);
+    const first = new Date(st.year, st.month - 1, 1);
+    const offset = (first.getDay() + 6) % 7;  // 周一开头
+    const days = new Date(st.year, st.month, 0).getDate();
+    const prevDays = new Date(st.year, st.month - 1, 0).getDate();
+    let html = '<div class="sd-panal-table-container"><table><thead><tr>' + '一二三四五六日'.split('').map((c) => `<th><div class="sd-basic-date-header">${c}</div></th>`).join('') + '</tr></thead><tbody>';
+    for (let i = 0; i < 42; i++) {
+      if (i % 7 === 0) html += '<tr>';
+      const n = i - offset + 1;
+      const fade = n < 1 || n > days;
+      const label = n < 1 ? prevDays + n : n > days ? n - days : n;
+      html += `<td class="sd-basic-item-wrapper${fade ? ' sd-basic-fade' : ''}"><div class="sd-basic-date-item" data-fade="${fade ? 1 : 0}">${label}</div></td>`;
+      if (i % 7 === 6) html += '</tr>';
+    }
+    w.insertAdjacentHTML('beforeend', html + '</tbody></table></div>');
+    w.querySelectorAll('.sd-basic-date-item').forEach((it) => it.addEventListener('click', (e) => {
+      e.stopPropagation();
+      if (it.dataset.fade === '1') return;
+      avail.value = `${st.year}-${String(st.month).padStart(2, '0')}-${String(it.textContent).padStart(2, '0')}`;
+      dayPanel.style.display = 'none';
+    }));
+  }
+  avail.addEventListener('click', (e) => {
+    e.stopPropagation();
+    if (!dayPanel) {
+      dayPanel = document.createElement('div');
+      dayPanel.className = 'sd-Dropdown-dropdown';
+      document.body.appendChild(dayPanel);
+    }
+    renderDay({ year: 2026, month: 10 });
+    const r = avail.getBoundingClientRect();
+    dayPanel.style.top = (window.scrollY + r.bottom) + 'px';
+    dayPanel.style.left = (window.scrollX + r.left) + 'px';
+    dayPanel.style.display = '';
+  });
+  document.addEventListener('mousedown', (e) => { if (dayPanel && !dayPanel.contains(e.target) && e.target !== avail) dayPanel.style.display = 'none'; });
+
   window.__formValues = () => {
     const sels = (key) => [...document.querySelectorAll(`[data-key="${key}"] .sd-Input-display-value`)].map((s) => s.textContent);
     const out = {};
@@ -167,6 +237,7 @@
     const p = sels('period');
     const ym = (y, m) => `${y}-${String(parseInt(m, 10)).padStart(2, '0')}`;
     out.period = p.length === 4 && p.every(Boolean) ? `${ym(p[0], p[1])}~${ym(p[2], p[3])}` : p.join('|');
+    out.gender = (sels('gender')[0]) || ''; out.degree = (sels('degree')[0]) || '';
     out.__submitted = !!window.__submitted;
     return out;
   };

@@ -252,8 +252,14 @@ def test_moka_open_question_uses_fixed_answer(profile):
 
 def test_moka_sd_demo_year_month_selects_and_date_panel(page, profile, tmp_path):
     page.goto(demo_url("moka_sd_style"))
+    profile = profile.model_copy(deep=True)
+    profile.basic.available = "2026-11-18"
     report = run(page, profile, report_dir=tmp_path)
     got = page.evaluate("() => window.__formValues()")
+    assert got["avail"] == "2026-11-18"  # SHEIN 的日视图面板：标题「2026年 十月」，prev-tool / next-tool 翻月，fade 格不点
+    assert (got["gender"], got["degree"]) == ("男", "硕士")  # 输入框形态的下拉；标签在同一表单项的 .title 里
+    labels = {i["label"] for i in report["items"]}
+    assert {"性别", "最高学历"} <= labels, labels  # 曾因把整个下拉控件排除出标签文字而丢了标签
     assert got["grad"] == "2026-12"  # 毕业时间 = 年下拉 + 月下拉
     assert got["period"] == "2025-09~2026-12"  # 就读时间 = 起止各一对，共 4 个下拉
     assert got["birth"] == "2000-05-01"  # sd-panal 日期面板：双箭头翻年 → 点月 → 点日
@@ -269,3 +275,35 @@ def test_diagnose_records_context_of_unlabeled_fields(page):
     extract(page)  # 注入页面脚本
     data = page.evaluate("async () => await window.__autofill.diagnose(3)")
     assert "unlabeled" in data and any("<" in u["html"] for u in data["unlabeled"])
+
+
+def test_moka_prefilled_year_month_selects_are_still_recognised_and_compared(page, profile, tmp_path):
+    # 站点解析简历后年月已经选好，输入框 placeholder 变成空：仍要认出来，一致就保留，不一致才改
+    page.goto(demo_url("moka_sd_style"))
+    run(page, profile, report_dir=tmp_path)  # 第一次：填好
+    page.evaluate("() => document.querySelectorAll('.sd-Select-container input').forEach((i) => i.removeAttribute('placeholder'))")
+    again = run(page, profile, report_dir=tmp_path)
+    by_label = {i["label"]: i for i in again["items"]}
+    assert by_label["就读时间"]["status"] == "kept" and by_label["毕业时间"]["status"] == "kept", by_label
+    assert page.evaluate("() => window.__formValues()")["period"] == "2025-09~2026-12"
+    # 页面上是别的起止时间：资料是「2025-09 ~ 2026-12」，只对上开始时间不算一致
+    page.evaluate("() => { const s = document.querySelectorAll('[data-key=period] .sd-Input-display-value'); s[2].textContent = '2024'; s[3].textContent = '6月'; }")
+    p2 = run(page, profile, report_dir=tmp_path, overwrite=True)
+    assert page.evaluate("() => window.__formValues()")["period"] == "2025-09~2026-12"
+    assert {i["label"]: i for i in p2["items"]}["就读时间"]["status"] == "filled"
+
+
+def test_available_text_is_not_forced_into_a_date_picker(page, profile, tmp_path):
+    # 资料里「到岗时间」写的是「随时到岗」：日期框不硬填，并且说清楚原因
+    page.goto(demo_url("moka_sd_style"))
+    report = run(page, profile, report_dir=tmp_path)
+    item = next(i for i in report["items"] if i["label"] == "可到岗实习时间")
+    assert item["status"] == "unfilled" and "不是具体日期" in item["note"], item
+    assert page.evaluate("() => window.__formValues()")["avail"] == ""
+
+
+def test_internship_end_time_is_not_confused_with_availability():
+    from autofill.rules import IGNORE, match_label
+
+    assert match_label("预计实习结束时间", "basic") == IGNORE
+    assert match_label("可到岗实习时间", "basic") == "basic.available"

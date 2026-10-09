@@ -298,6 +298,16 @@ def resolve(it: Item, f: dict, profile: Profile, ctx: dict | None = None) -> Non
             it.note = "资料里起止时间不全"
         return
     it.profile_index = idx
+    if it.key == "basic.available" and it.kind in ("date_picker", "date", "month") or (
+            it.key == "basic.available" and it.kind == "date_range"):
+        # 日期框要的是具体日期；资料里写「随时到岗」这类文字时不硬填
+        raw_av = profile.basic.available or ""
+        m_av = re.search(r"\d{4}\s*[-/.年]\s*\d{1,2}(?:\s*[-/.月]\s*\d{1,2})?", raw_av)
+        if not m_av:
+            it.note = f"资料里的到岗时间是「{raw_av[:12]}」，不是具体日期；日期框请手动选，或在资料里写成 2026-11-01"
+            return
+        it.candidates = [format_date(re.sub(r"\s*[/.年月]\s*", "-", m_av.group()).strip("-"), it.kind, ph)]
+        return
     if it.key == "basic.portfolio":
         link = profile.basic.portfolio or profile.basic.github or profile.basic.homepage
         if not link:
@@ -383,6 +393,9 @@ def _squash(v: str) -> str:
 def _same_value(page_value: str, candidates: list[str], key: str = "") -> bool:
     """页面上已有的值是否等于资料值。日期只比到页面给出的精度；手机号脱敏（188****6898）按通配比较。"""
     pv = _squash(page_value)
+    if key.endswith(".period"):  # 起止时间：开始、结束都要一致，只对上一个不算
+        want = [_squash(c) for c in candidates if c]
+        return bool(want) and bool(pv) and all(w[:7] in pv for w in want)
     is_date = key.rpartition(".")[2] in DATE_KEYS
     for c in candidates:
         cv = _squash(c)

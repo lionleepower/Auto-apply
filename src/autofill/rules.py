@@ -185,6 +185,7 @@ LABEL_RULES: list[tuple[str, str, str]] = [
     ("paper", r"年份|时间", "paper.year"),
     ("*", r"推荐码|内推码|推荐编码|内推编码|邀请码|referral|refer code", "ctx.referral"),
     ("*", r"紧急|联系人|推荐人|内推人|内推|验证码|星级|\bstar\b|粉丝|follower", IGNORE),
+    ("*", r"实习结束|预计.*结束时间|离职时间", IGNORE),  # 没有这项资料，也不该拿到岗时间顶替（SHEIN 的模型曾把它当成到岗时间）
     ("*", r"推荐方式|内推方式|推荐渠道", IGNORE),  # 站点按分享链接预选好的单选（无 / 内推 / 大使推荐），不动
     ("*", r"调剂", "basic.accept_adjustment"),
     ("*", r"身份证|证件号", "basic.id_number"),
