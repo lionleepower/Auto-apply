@@ -4,7 +4,7 @@
 (() => {
   // 同一版本已注入就跳过；版本不同（插件更新过）就整个替换掉旧代码。
   // 以前只判断「有没有」，结果插件更新后，开着的网申页里跑的还是旧代码。
-  const VERSION = '1b88b4426247';
+  const VERSION = 'cd09d86ea559';
   if (window.__autofill && window.__autofill.version === VERSION) return;
 
   const ATTR = 'data-af-id';
@@ -60,7 +60,15 @@
 
   function isCustomSelectRoot(el) {
     if (el.matches(CUSTOM_SELECT_SEL)) return true;
-    if (typeof el.className === 'string' && /(^|\s)sd-Select-container/.test(el.className)) return true;  // Moka
+    if (typeof el.className === 'string' && /(^|\s)sd-Select-container/.test(el.className)) {
+      // Moka：表单项的类型写在 apply-field 的类名里（string_info / Select / select_info / day_info …）。
+      // 学校名称、专业名称是 string_info：占位文字「请输入…」，菜单永远是「暂无选项」，就是自由输入的文本框
+      const item = el.closest('[class*="apply-field"]');
+      const inp = el.querySelector('input');
+      if (item && /string_info/.test(item.className)) return false;
+      if (inp && /^请输入/.test(inp.getAttribute('placeholder') || '')) return false;
+      return true;
+    }
     return typeof el.className === 'string' && CUSTOM_SELECT_CLASS.test(el.className);
   }
 
@@ -187,7 +195,8 @@
     while (w.nextNode()) {
       const n = w.currentNode;
       if (exclude.contains(n)) continue;
-      if (n.parentElement.closest('select, textarea, script, style, button, [' + ATTR + '], [' + ADD_ATTR + ']')) continue;
+      if (n.parentElement.closest('select, textarea, script, style, button, [' + ATTR + '], [' + ADD_ATTR + '], '
+        + '[class*="Dropdown-dropdown"], [class*="panal-menu"], [class*="dropdown-menu"], [class*="picker-dropdown"], [role="listbox"]')) continue;
       s += ' ' + n.nodeValue;
     }
     return clean(s);
@@ -212,6 +221,13 @@
   function findLabel(root) {
     const own = inlineLabel(root);
     if (own) return own;
+    // Moka 的表单项：<div class="apply-field …"><div class="title">性别</div><div class="ctrl">…控件…</div></div>
+    const item = root.closest('[class*="apply-field"]');
+    if (item && item.querySelectorAll('[' + ATTR + ']').length <= 1) {
+      const cap = [...item.children].find((c) => /(^|[\s_-])title([\s_-]|$)/i.test(typeof c.className === 'string' ? c.className : '') && !c.contains(root));
+      const t = cap && cleanLabel(cap.innerText);
+      if (t && !NOT_LABEL.test(t)) return t.slice(0, 80);
+    }
     // aria-labelledby 可能挂在外层容器上（OPPO：证件类型、联系电话的标签是 div，靠它关联）。
     // 只看包住不超过 3 个控件的容器，免得拿到整个分区 / 标签页的名字
     for (let a = root, i = 0; a && i < 6; a = a.parentElement, i++) {
@@ -366,6 +382,15 @@
       }
       used.add(id);
       c.id = id;
+    });
+    // 页面没刷新时，旧版本留下的标记还在（比如把下拉里的 <input> 标成过文本框）。不属于当前控件的一律清掉，
+    // 否则「容器里有多个已标记控件」会让找标签的逻辑放弃（众安 / SHEIN 2026-10-09：所有下拉都没了标签）
+    const live = new Set(controls.map((c) => c.el));
+    document.querySelectorAll('[' + ATTR + ']').forEach((e) => {
+      if (live.has(e)) return;
+      e.removeAttribute(ATTR);
+      e.removeAttribute('data-af-status');
+      if (e.style) { e.style.outline = ''; e.style.outlineOffset = ''; }
     });
     const headings = headingCandidates();
     const fields = controls.map((c) => {

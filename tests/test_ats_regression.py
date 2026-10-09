@@ -307,3 +307,27 @@ def test_internship_end_time_is_not_confused_with_availability():
 
     assert match_label("预计实习结束时间", "basic") == IGNORE
     assert match_label("可到岗实习时间", "basic") == "basic.available"
+
+
+def test_stale_marks_from_earlier_extractions_do_not_hide_labels(page, profile, tmp_path):
+    # 页面没刷新、旧版本把下拉里的 <input> 标成了文本框；新版本把整个 label 当成下拉后，
+    # 里面还留着旧的 data-af-id，导致「容器里有多个控件」而放弃找标题（众安 / SHEIN 2026-10-09）
+    page.goto(demo_url("moka_sd_style"))
+    page.evaluate("() => document.querySelectorAll('.sd-Select-container input').forEach((i, k) => { i.setAttribute('data-af-id', 'stale' + k); i.setAttribute('data-af-status', 'unfilled'); })")
+    report = run(page, profile, report_dir=tmp_path)
+    labels = {i["label"]: i["status"] for i in report["items"]}
+    assert labels.get("性别") == "filled" and labels.get("最高学历") == "filled", labels
+    # 陈旧标记被清掉：下拉里面的 <input> 不再带标记；自由输入框（学校 / 专业）本身是当前控件，保留
+    assert page.evaluate("() => document.querySelectorAll('.apply-field.Select input[data-af-id]').length") == 0
+    assert labels.get("学校名称") == "filled" and labels.get("专业名称") == "filled", labels  # string_info 当文本框，不当下拉
+
+
+def test_open_popup_text_is_not_a_label(page, profile, tmp_path):
+    # 上一个日期面板没关干净时，它的文字（「2026 年 十月 一 二 三 …」）不能被当成别的字段的标签
+    page.goto(demo_url("moka_sd_style"))
+    page.click("#avail")  # 面板留在页面上
+    labels = page.evaluate("() => (window.__autofill ? 0 : 0) || 0")
+    from autofill.pipeline import extract
+
+    fields = extract(page)["fields"]
+    assert not any("一 二 三" in f["label"] for f in fields), [f["label"] for f in fields]
