@@ -18,9 +18,15 @@ from .profile import Profile
 from .rules import (DATE_KEYS, IGNORE, KEY_CATALOG, LIST_SECTIONS, SKIP_EXPAND, candidates_for, classify_section,
                     classify_trail, format_date, match_label, parse_hint, split_alternatives, split_region)
 
+JS_DIR = Path(__file__).parent / "js"
+
+
 def page_script() -> str:
-    """页面脚本；版本号是内容哈希，页面里的旧版本会被整个替换。"""
-    src = (Path(__file__).parent / "js" / "autofill.js").read_text(encoding="utf-8")
+    """页面脚本 = 通用核心 + js/adapters/ 下各招聘系统的适配器（按文件名顺序拼进核心的挂载点）。
+    版本号是拼好后全文的内容哈希，页面里的旧版本会被整个替换。"""
+    src = (JS_DIR / "autofill.js").read_text(encoding="utf-8")
+    adapters = "\n".join(f.read_text(encoding="utf-8") for f in sorted((JS_DIR / "adapters").glob("*.js")))
+    src = src.replace("/*@@ADAPTERS@@*/", adapters)
     return src.replace("__AUTOFILL_VERSION__", hashlib.sha1(src.encode("utf-8")).hexdigest()[:12])
 
 
@@ -51,6 +57,7 @@ class Item:
     chosen: str | None = None
     action: str = ""  # "fill"：需要在页面上填写
     replacing: str | None = None  # 要覆盖的页面原值
+    risk: str = ""  # "high"：猜了一个填错代价大的值（如选了最接近的学校），用红色标出
 
 
 def _norm(label: str) -> str:
@@ -353,7 +360,7 @@ def resolve(it: Item, f: dict, profile: Profile, ctx: dict | None = None) -> Non
         if not it.candidates:
             it.note = "资料里没有「学校所在地」"
         return
-    if it.key == "education.school" and it.kind == "custom_select" and raw:
+    if it.key == "education.school" and it.kind in ("custom_select", "text") and raw:
         it.candidates = [c for c in (raw, profile.get("education.school_en", idx)) if c]
         return
     if it.kind == "cascader" and it.key == "education.school" and raw:
@@ -509,6 +516,10 @@ def apply_result(it: Item, res: dict) -> None:
             it.note = f"已把页面上的「{it.replacing[:20]}」改为资料值"
         if res.get("note"):
             it.note = "；".join(x for x in (it.note, res["note"]) if x)
+        if res.get("guessed"):  # 没有完全对得上的选项，选了最接近的：标黄让人确认
+            it.status = "uncertain"
+            if res.get("risk"):
+                it.risk = res["risk"]
         if res.get("truncated"):
             it.status = "uncertain"
         if res.get("unverified"):
@@ -522,9 +533,10 @@ def apply_result(it: Item, res: dict) -> None:
 
 def build_report(url: str, items: list[Item], profile: Profile, *, t0: float, llm_error: str | None = None,
                  dry_run: bool = False, ctx: dict | None = None, upload_note: str | None = None,
-                 report_dir: str | Path | None = "runs") -> dict:
+                 report_dir: str | Path | None = "runs", adapters: list[str] | None = None) -> dict:
     report = {
         "url": url,
+        "adapters": adapters or [],  # 本页命中的招聘系统适配器（空 = 纯通用逻辑），排查问题先看这个
         "time": time.strftime("%Y-%m-%d %H:%M:%S"),
         "elapsed_s": round(time.time() - t0, 2),
         "llm_error": llm_error,
@@ -646,10 +658,11 @@ def run(page: Page, profile: Profile, llm: ChatClient | None = None, overwrite: 
     items = list(merged.values())
     if not dry_run:
         for it in items:
-            page.evaluate("([id, s, n]) => window.__autofill.mark(id, s, n)", [it.id, it.status, it.note])
+            page.evaluate("([id, s, n, r]) => window.__autofill.mark(id, s, n, r)", [it.id, it.status, it.note, it.risk])
         page.evaluate("items => window.__autofill.panel(items)", [asdict(it) for it in items])
     report = build_report(page.url, items, profile, t0=t0, llm_error=llm_error, dry_run=dry_run, ctx=ctx,
-                          upload_note=upload_note, report_dir=None)
+                          upload_note=upload_note, report_dir=None,
+                          adapters=page.evaluate("() => window.__autofill.adapters()"))
     report["sections"] = [x for x in sections if x["saved"] is not None or not save]
     if report_dir:
         d = Path(report_dir)

@@ -35,7 +35,7 @@
     return window.__autofill.saveButtons().length;
   }
   function pageMarkAll(rows) {
-    rows.forEach(([id, status, note]) => window.__autofill.mark(id, status, note));
+    rows.forEach(([id, status, note, risk]) => window.__autofill.mark(id, status, note, risk));
     return rows.length;
   }
   function pageSetFile(id, b64, name, mime) {
@@ -147,7 +147,7 @@
 
       env.progress('识别字段…');
       const plan = await env.api('/plan', {
-        url: opts.url, fields: data.fields, round,
+        url: opts.url, fields: data.fields, round, adapters: data.adapters || [],
         options: {
           overwrite: !!opts.overwrite, dry_run: !!opts.dryRun, llm: opts.llm || 'none',
           referral: opts.referral || '', resume_uploaded: uploaded, resume: opts.resume || null,
@@ -211,7 +211,7 @@
 
     const report = await env.api('/finish', { sessions, results, upload_note: uploadNote,
       sections: sections.filter((x) => x.saved !== null || !opts.save) });
-    if (!opts.dryRun) await env.exec(pageMarkAll, [report.items.map((it) => [it.id, it.status, it.note])]);
+    if (!opts.dryRun) await env.exec(pageMarkAll, [report.items.map((it) => [it.id, it.status, it.note, it.risk || ''])]);
     return report;
   }
 

@@ -366,7 +366,7 @@ function render(report, tabId) {
   todo.forEach((it) => {
     const li = document.createElement('li');
     const tag = document.createElement('span');
-    tag.className = 'tag ' + it.status;
+    tag.className = 'tag ' + (it.risk === 'high' ? 'unfilled' : it.status);  // 红色：猜的是学校这类填错代价大的
     const label = document.createElement('span');
     label.className = 'label';
     label.textContent = `${it.label || '（无标签）'}${it.count > 1 ? ` ×${it.count}` : ''}`;
@@ -375,7 +375,7 @@ function render(report, tabId) {
     where.textContent = it.section ? ` · ${it.section}` : '';
     const note = document.createElement('div');
     note.className = 'note';
-    note.textContent = `${STATUS_TEXT[it.status] || it.status}：${it.note || ''}`;
+    note.textContent = `${it.risk === 'high' ? '请重点核对' : STATUS_TEXT[it.status] || it.status}：${it.note || ''}`;
     li.append(tag, label, where, note);
     li.title = '点击跳到这个字段';
     li.addEventListener('click', () => chrome.scripting.executeScript({

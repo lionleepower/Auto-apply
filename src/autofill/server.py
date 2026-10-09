@@ -203,6 +203,7 @@ class PlanIn(BaseModel):
     url: str
     fields: list[dict]
     round: int = 0  # 第几轮（同一个字段 id 在不同轮里各算一次）
+    adapters: list[str] = Field(default_factory=list)  # 页面脚本报告的、本页命中的适配器
     options: PlanOptions = Field(default_factory=PlanOptions)
 
 
@@ -219,7 +220,8 @@ def plan_fill(body: PlanIn):
     now = time.time()
     with _LOCK:
         SESSIONS[sid] = {"items": items, "t0": now, "llm_error": llm_error, "url": body.url,
-                         "dry_run": o.dry_run, "ctx": ctx, "round": body.round, "resume": o.resume}
+                         "dry_run": o.dry_run, "ctx": ctx, "round": body.round, "resume": o.resume,
+                         "adapters": body.adapters}
         for old in [k for k, v in SESSIONS.items() if now - v["t0"] > SESSION_TTL_S]:
             SESSIONS.pop(old, None)
     return {"session": sid, "ids": [it.id for it in items],
@@ -271,7 +273,7 @@ def finish(body: FinishIn):
     s["llm_error"] = next((x["llm_error"] for x in found if x["llm_error"]), None)
     profile = load_profile(_profile_path(), s.get("resume"))
     report = build_report(s["url"], items, profile, t0=s["t0"], llm_error=s["llm_error"], dry_run=s["dry_run"],
-                          ctx=s["ctx"], upload_note=body.upload_note, report_dir=None)
+                          ctx=s["ctx"], upload_note=body.upload_note, report_dir=None, adapters=s.get("adapters"))
     report["sections"] = body.sections
     # 文件名带上站点和随机尾巴：几个页面同一秒填完也不会互相覆盖
     host = re.sub(r"[^\w.-]", "_", urlparse(s["url"]).hostname or "page")

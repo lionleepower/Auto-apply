@@ -111,7 +111,7 @@
     });
   });
   // ---- 学校：带候选的搜索框。输入后显示匹配项；不从候选里点选，失焦时内容会被清掉（和众安一致） ----
-  const SCHOOLS = ['示例大学', '示例大学附属学院', '示例理工大学', '爱丁堡大学'];
+  const SCHOOLS = ['示例大学', '示例大学附属学院', '示例理工大学', 'The University of Edinburgh'];  // 中文名「爱丁堡大学」不在库里，只有英文名
   document.querySelectorAll('[data-search="school"]').forEach((lab) => {
     const inp = lab.querySelector('input');
     let chosen = '';

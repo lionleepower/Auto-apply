@@ -84,7 +84,7 @@ BASIC_GROUPS = [
 SCHEMA = {
     "basic_groups": BASIC_GROUPS,
     "education": _fields({
-        "school": "学校", "college": "学院", "major": "专业", "degree": "学历", "start": "入学（YYYY-MM）",
+        "school": "学校", "school_en": "学校英文名", "college": "学院", "major": "专业", "degree": "学历", "start": "入学（YYYY-MM）",
         "end": "毕业（YYYY-MM）", "gpa": "GPA / 成绩", "rank": "排名", "city": "学校所在城市", "advisor": "导师",
         "research_area": "研究方向",
     }, degree={"type": "select", "options": DEGREES}),
