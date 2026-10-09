@@ -4,7 +4,7 @@
 (() => {
   // 同一版本已注入就跳过；版本不同（插件更新过）就整个替换掉旧代码。
   // 以前只判断「有没有」，结果插件更新后，开着的网申页里跑的还是旧代码。
-  const VERSION = 'cd09d86ea559';
+  const VERSION = '1c19a7948cf0';
   if (window.__autofill && window.__autofill.version === VERSION) return;
 
   const ATTR = 'data-af-id';
@@ -1209,6 +1209,37 @@
     return { ok: el.value === value, chosen: el.value };
   }
 
+  // ---------- 带候选列表的输入框（学校、专业…） ----------
+
+  // 外观是输入框、实际是下拉容器里的搜索框（Moka：sd-Select-container 里 placeholder 为「请输入…」）：
+  // 直接写进去的文字，失焦时站点会因为「没从候选里选」而清掉（众安 2026-10-09：报告里是已填，页面上是空的）
+  function searchSelectRoot(el) {
+    return el.tagName === 'INPUT' ? el.closest('[class*="Select-container"]') : null;
+  }
+
+  async function fillSearchText(el, candidates) {
+    const root = searchSelectRoot(el);
+    // 1. 当搜索下拉用：输入、等候选、点选，由普通下拉的逻辑核对
+    const r = await fillCustomSelect(root, candidates, {});
+    if (r.ok) return r;
+    const noList = /no matching option|没有任何选项|dropdown did not open/.test(r.reason || '');
+    if (!noList) return r;
+    // 2. 站点没有给出匹配的候选：试着直接输入，失焦后等一会儿，看站点是不是把它清掉了
+    const value = candidates[0];
+    el.focus();
+    setNativeValue(el, value);
+    el.dispatchEvent(new Event('blur', { bubbles: true }));
+    el.blur();
+    dismiss(el);
+    await sleep(500);
+    const kept = clean(root.innerText) + ' ' + el.value;
+    if (el.value === value || kept.includes(value)) {
+      return { ok: true, chosen: value, note: '站点没有匹配的候选项，按输入内容填写（失焦后内容仍在）' };
+    }
+    setNativeValue(el, '');
+    return { ok: false, reason: `站点要求从候选里选，但候选里没有「${value}」，直接输入也被清掉了（请手动选择）`, options: r.options };
+  }
+
   async function fill(id, kind, candidates, meta) {
     meta = meta || {};
     const el = document.querySelector('[' + ATTR + '="' + id + '"]');
@@ -1217,6 +1248,7 @@
     if (!candidates.length) return { ok: false, reason: 'no value' };
     el.scrollIntoView({ block: 'center' });
 
+    if (kind === 'text' && searchSelectRoot(el)) return fillSearchText(el, candidates);
     if (kind === 'text' || kind === 'textarea' || kind === 'date' || kind === 'month') {
       if (el.readOnly) return { ok: false, reason: 'readonly (picker widget)' };
       return fillTextValue(el, candidates, kind);

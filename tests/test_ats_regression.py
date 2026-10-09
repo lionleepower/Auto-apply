@@ -331,3 +331,28 @@ def test_open_popup_text_is_not_a_label(page, profile, tmp_path):
 
     fields = extract(page)["fields"]
     assert not any("一 二 三" in f["label"] for f in fields), [f["label"] for f in fields]
+
+
+def test_search_select_school_must_be_chosen_from_candidates(page, profile, tmp_path):
+    # 众安：学校是带候选的搜索框，直接写进去的文字失焦就被清掉；曾经报告「已填」但页面是空的
+    p = profile.model_copy(deep=True)
+    p.basic.available = "2026-11-18"
+    page.goto(demo_url("moka_sd_style"))
+    report = run(page, p, report_dir=tmp_path)
+    page.wait_for_timeout(600)  # 等站点的失焦清理跑完再看
+    got = page.evaluate("() => window.__formValues()")
+    assert got["school"] == "示例大学"  # 点的是「示例大学」，不是排在前面的「示例大学附属学院」
+    school = next(i for i in report["items"] if i["label"] == "学校名称")
+    assert school["status"] == "filled", school
+
+
+def test_school_missing_from_candidates_is_reported_not_faked(page, profile, tmp_path):
+    p = profile.model_copy(deep=True)
+    p.basic.available = "2026-11-18"
+    p.education[0].school = "不存在的大学"
+    page.goto(demo_url("moka_sd_style"))
+    report = run(page, p, report_dir=tmp_path)
+    page.wait_for_timeout(600)
+    assert page.evaluate("() => window.__formValues()")["school"] == ""  # 页面上确实是空的
+    school = next(i for i in report["items"] if i["label"] == "学校名称")
+    assert school["status"] == "unfilled" and "候选" in school["note"], school  # 报告和页面一致，不再假装已填
