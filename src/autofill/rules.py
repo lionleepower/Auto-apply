@@ -150,6 +150,7 @@ LABEL_RULES: list[tuple[str, str, str]] = [
     ("education", r"论文|毕设|毕业设计", "education.thesis"),
     ("education", r"课程", "education.courses"),
     ("work", r"性质|类型", "work.kind"),
+    ("work", r"年薪|月薪|薪资|薪酬|收入", IGNORE),  # 上一份工作的薪资：资料里没有，也不该编（百度「职位年薪」曾被当成职位名称）
     ("work", r"部门", "work.department"),
     ("work", r"公司|单位|企业", "work.company"),
     ("work", r"职位|岗位|职务", "work.title"),
@@ -180,6 +181,7 @@ LABEL_RULES: list[tuple[str, str, str]] = [
     ("paper", r"年份|时间", "paper.year"),
     ("*", r"推荐码|内推码|推荐编码|内推编码|邀请码|referral|refer code", "ctx.referral"),
     ("*", r"紧急|联系人|推荐人|内推人|内推|验证码|星级|\bstar\b|粉丝|follower", IGNORE),
+    ("*", r"推荐方式|内推方式|推荐渠道", IGNORE),  # 站点按分享链接预选好的单选（无 / 内推 / 大使推荐），不动
     ("*", r"调剂", "basic.accept_adjustment"),
     ("*", r"身份证|证件号", "basic.id_number"),
     ("*", r"毕业院校|最高学历.*学校", "education.school"),

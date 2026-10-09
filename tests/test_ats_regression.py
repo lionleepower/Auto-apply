@@ -122,3 +122,20 @@ def test_prompt_words_and_bracket_examples_do_not_confuse_rules():
     long = "请列出你常用的 AI 工具 & 模型（编码工具：Cursor、GitHub Copilot...... 大模型：GPT-4o）"
     assert match_label(long, "basic") is None
     assert match_label("GitHub 链接", "basic") == "basic.github"
+
+
+def test_previous_salary_and_referral_channel_are_left_alone():
+    from autofill.rules import IGNORE, match_label
+
+    assert match_label("职位年薪", "work") == IGNORE  # 不是职位名称
+    assert match_label("推荐方式", "basic") == IGNORE  # 不是内推码
+    assert match_label("内推码", "basic") == "ctx.referral"
+    assert match_label("职位名称", "work") == "work.title"
+
+
+def test_filled_select_value_is_not_taken_as_its_label(page, profile, tmp_path):
+    # 二次填写：下拉里已有「男」「硕士」时，标签不能变成选中的值
+    page.goto(demo_url("feishu_ud_style"))
+    run(page, profile, report_dir=tmp_path)
+    labels = page.evaluate("() => window.__autofill.extract().fields.map((f) => f.label)")
+    assert "性别" in labels and "学历" in labels and "男" not in labels and "硕士" not in labels

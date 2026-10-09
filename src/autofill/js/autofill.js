@@ -225,6 +225,13 @@
         }
       }
     }
+    // 下拉控件（飞书 combobox：隐藏的只读 input + 旁边显示选中值的节点）：整个控件都不能算进标签文字，
+    // 否则选过之后再填一次，标签就变成了选中的值（2026-10-09 得物二次填写：性别 → 男、学历 → 硕士）
+    let ctl = root;
+    for (let c = root.parentElement, i = 0; c && i < 6; c = c.parentElement, i++) {
+      if (c.querySelectorAll('[' + ATTR + ']').length > 1) break;
+      if (/select|picker|cascader|combobox/i.test(typeof c.className === 'string' ? c.className : '')) ctl = c;
+    }
     let a = root.parentElement;
     // 往上最多找 9 层（讯飞的自动补全输入框离表单项标签有 7 层）；遇到包住多个控件的容器就停
     for (let i = 0; a && i < 9; i++, a = a.parentElement) {
@@ -238,7 +245,8 @@
         }
         break;
       }
-      const t = cleanLabel(textExcluding(a, root));
+      if (ctl.contains(a)) continue;  // 还在下拉控件自己的容器里：里面是「已选的值」，不是标签
+      const t = cleanLabel(textExcluding(a, ctl));
       if (t && !NOT_LABEL.test(t)) return t.slice(0, 80);
     }
     const fallback = cleanLabel(root.getAttribute('aria-label') || root.getAttribute('placeholder') || '');
