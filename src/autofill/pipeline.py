@@ -272,7 +272,10 @@ def resolve(it: Item, f: dict, profile: Profile, ctx: dict | None = None) -> Non
         return
     if it.key.startswith("answer:"):
         # 答案可以写多个说法，用「、」分隔：「内部推荐、内推」（OPPO 的选项叫「内部推荐」）
-        answers = [a for a in re.split(r"[、/]", str(profile.answers[it.key[7:]])) if a]
+        text = str(profile.answers[it.key[7:]]).strip()
+        # 长文本 / 带标点的整句是一份完整回答（开放题），不能拆；短词才按「、」拆成多个说法
+        long_text = len(text) > 24 or "\n" in text or bool(re.search(r"[，。；：,;:]", text))
+        answers = [text] if long_text else [a for a in re.split(r"[、/]", text) if a]
         it.candidates = answers + [y for a in answers for y in YES_NO.get(a, [])]
         it.note = "资料里的固定答案"
         return

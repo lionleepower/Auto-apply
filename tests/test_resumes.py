@@ -195,3 +195,18 @@ def test_english_degree_and_us_dates():
     assert format_date("2023-09", "text", "MM/YYYY") == "09/2023"
     assert format_date("2023-09-05", "text", "MM/DD/YYYY") == "09/05/2023"
     assert format_date("2023-09", "text", "YYYY-MM") == "2023-09"
+
+
+def test_long_fixed_answer_is_not_split_into_alternatives(profile):
+    from autofill.pipeline import Item, resolve
+
+    profile.answers["协作.*项目"] = "背景：我要投递很多网站，逐个手填太慢。方案：与 AI 协作，我定边界，AI 实现；结果：能跑通。"
+    profile.answers["亲属"] = "否、没有、无"
+    it = Item(id="f1", label="请描述一个与 AI 协作完成的项目", section="x", section_kind="basic", kind="text", index=0)
+    it.key = "answer:协作.*项目"
+    resolve(it, {"placeholder": "", "label": it.label, "kind": "text", "id": "f1"}, profile, {})
+    assert it.candidates == [profile.answers["协作.*项目"]]
+    short = Item(id="f2", label="是否有亲属", section="x", section_kind="basic", kind="radio", index=0)
+    short.key = "answer:亲属"
+    resolve(short, {"placeholder": "", "label": short.label, "kind": "radio", "id": "f2"}, profile, {})
+    assert short.candidates[:3] == ["否", "没有", "无"]

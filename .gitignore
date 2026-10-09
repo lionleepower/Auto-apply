@@ -17,3 +17,4 @@ profile_notes.txt
 # 实测脚本：真实站点列表（含内推码）、插件测试副本
 tools/live/sites.json
 .live-ext/
+profile.yaml.*
