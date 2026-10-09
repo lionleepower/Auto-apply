@@ -22,6 +22,7 @@ from pydantic import BaseModel, Field
 from .batch import load_targets, record, referral_from_url, target_for_url
 from . import settings as app_settings
 from .gui import UI_DIR, router as ui_router
+from .aipick import pick_option
 from .llm import build_client
 from .pipeline import (Item, _wanted_section, annotate, apply_result, build_report, next_add_click, page_script,
                        pick_portfolio_field, pick_resume_field, prepare, section_counts)
@@ -221,12 +222,33 @@ def plan_fill(body: PlanIn):
     with _LOCK:
         SESSIONS[sid] = {"items": items, "t0": now, "llm_error": llm_error, "url": body.url,
                          "dry_run": o.dry_run, "ctx": ctx, "round": body.round, "resume": o.resume,
-                         "adapters": body.adapters}
+                         "adapters": body.adapters, "llm_name": o.llm}
         for old in [k for k, v in SESSIONS.items() if now - v["t0"] > SESSION_TTL_S]:
             SESSIONS.pop(old, None)
     return {"session": sid, "ids": [it.id for it in items],
             "fill": [{"id": it.id, "kind": it.kind, "label": it.label, "candidates": it.candidates,
                       "meta": it.meta} for it in items if it.action == "fill"]}
+
+
+class PickOptionIn(BaseModel):
+    session: str
+    id: str
+    options: list[str]
+
+
+@app.post("/api/pick-option")
+def pick_option_api(body: PickOptionIn):
+    """选项对不上时，让 AI 从站点给的选项里挑最接近的一项。只发这一条资料值（见 aipick.py 的隐私约定）。"""
+    with _LOCK:
+        s = SESSIONS.get(body.session)
+    if not s:
+        raise HTTPException(404, "会话已过期，请重新点「填写本页」")
+    it = next((x for x in s["items"] if x.id == body.id), None)
+    if not it or not it.key:
+        return {"choice": None, "reason": "没有对应的资料项"}
+    profile = load_profile(_profile_path(), s.get("resume"))
+    value = profile.get(it.key, it.profile_index)
+    return pick_option(build_client(s.get("llm_name") or "none"), it.label, it.key, value, body.options)
 
 
 class NextSectionIn(BaseModel):

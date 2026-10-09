@@ -163,7 +163,17 @@
         }
         env.progress(`填写 ${i + 1}/${plan.fill.length}：${f.label || '（无标签）'}`);
         try {
-          const r = await runJob(env, f.id, f.kind, f.candidates, f.meta);
+          let r = await runJob(env, f.id, f.kind, f.candidates, f.meta);
+          // 选项对不上（封闭列表）时，让 AI 从选项里挑最接近的一项再填一次；只发这一条资料值，结果标黄
+          if (!r.ok && r.options && r.options.length && opts.llm && opts.llm !== 'none' && opts.aiPick !== false) {
+            try {
+              const p = await env.api('/pick-option', { session: plan.session, id: f.id, options: r.options });
+              if (p.choice) {
+                const r2 = await runJob(env, f.id, f.kind, [p.choice], f.meta);
+                if (r2.ok) r = { ...r2, guessed: true, note: [r2.note, `AI 从选项里选了「${p.choice}」，请确认`].filter(Boolean).join('；') };
+              }
+            } catch (e) { /* AI 不可用：保留规则的失败原因 */ }
+          }
           results[`${round}:${f.id}`] = r;
           if (!r.ok) failed.push({ key: `${round}:${f.id}`, f });
         } catch (e) {

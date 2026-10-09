@@ -1,0 +1,22 @@
+<!doctype html>
+<html lang="zh-CN">
+<head><meta charset="utf-8"><title>Demo · 选项对不上时让 AI 挑最接近的一项</title>
+<style>body{font:14px/1.6 system-ui,sans-serif;max-width:640px;margin:24px auto}label{display:block;margin:10px 0}</style></head>
+<body>
+<h3>求职意向</h3>
+<label>目标职位类别 <select data-key="category"><option value="">请选择</option><option>技术</option><option>产品</option><option>政企</option><option>销售</option><option>综合</option></select></label>
+<h3>基本信息</h3>
+<label>姓名 <input type="text" data-key="name"></label>
+<label>手机号 <input type="text" data-key="phone"></label>
+<label>你平均一周使用AI工具的频次是？ <select data-key="ai_freq"><option value="">请选择</option><option>每天</option><option>每周几次</option><option>很少</option></select></label>
+<button type="button" id="submit">提交</button>
+<script>
+  window.__formValues = () => {
+    const out = {};
+    document.querySelectorAll('[data-key]').forEach((e) => { out[e.dataset.key] = e.value; });
+    out.__submitted = !!window.__submitted;
+    return out;
+  };
+  document.getElementById('submit').addEventListener('click', () => { window.__submitted = true; });
+</script>
+</body></html>

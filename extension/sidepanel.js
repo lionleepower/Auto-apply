@@ -111,6 +111,7 @@ async function checkServer() {
     $('row-portfolio').hidden = !pf;
     $('portfolio-name').textContent = pf ? `（${pf}）` : '';
     $('opt-llm').disabled = !h.llm.length;
+    $('opt-aipick').disabled = !h.llm.length;
     $('llm-name').textContent = h.llm_label || 'LLM（还没配置 AI 接口）';
     $('opt-llm').dataset.provider = h.llm.length ? 'auto' : 'none';
     setButtons(true);
@@ -180,11 +181,12 @@ function showTab() {
   setButtons();
 }
 
-const OPTS = ['opt-upload', 'opt-portfolio', 'opt-overwrite', 'opt-llm', 'opt-save'];
+const OPTS = ['opt-upload', 'opt-portfolio', 'opt-overwrite', 'opt-llm', 'opt-aipick', 'opt-save'];
 async function loadOptions() {
   const saved = await chrome.storage.local.get(OPTS);
   OPTS.forEach((k) => { if (k in saved) $(k).checked = saved[k]; });
   if (!('opt-llm' in saved)) $('opt-llm').checked = true;
+  if (!('opt-aipick' in saved)) $('opt-aipick').checked = true;
   OPTS.forEach((k) => $(k).addEventListener('change', () => chrome.storage.local.set({ [k]: $(k).checked })));
 }
 
@@ -241,6 +243,7 @@ async function start(dryRun) {
       upload: $('opt-upload').checked && !$('opt-upload').disabled,
       overwrite: $('opt-overwrite').checked,
       llm: $('opt-llm').checked && !$('opt-llm').disabled ? $('opt-llm').dataset.provider : 'none',
+      aiPick: $('opt-aipick').checked,
       referral: $('referral').value.trim(),
       resume: $('resume-pick').value || null,
       portfolio: !$('row-portfolio').hidden && $('opt-portfolio').checked,

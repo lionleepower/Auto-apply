@@ -588,6 +588,24 @@ def fill_in_page(page: Page, it: Item) -> dict:
     return page_job(page, it.id, it.kind, it.candidates, it.meta)
 
 
+def fill_with_ai_fallback(page: Page, it: Item, profile: Profile, llm: ChatClient | None) -> dict:
+    """先按规则填；选项对不上（封闭列表）时，让 AI 从选项里挑最接近的一项再填一次。"""
+    res = fill_in_page(page, it)
+    if res.get("ok") or not llm or not res.get("options"):
+        return res
+    from .aipick import pick_option
+
+    picked = pick_option(llm, it.label, it.key, profile.get(it.key or "", it.profile_index), res["options"])
+    if not picked["choice"]:
+        return res
+    it.candidates = [picked["choice"]]
+    again = fill_in_page(page, it)
+    if not again.get("ok"):
+        return res
+    again.update(guessed=True, note=f"AI 从选项里选了「{picked['choice']}」，请确认")
+    return again
+
+
 def _wanted_section(text: str, profile: Profile) -> bool:
     """这个分区值得打开编辑吗：认得出是哪类分区，且资料里有对应内容。"""
     if re.search(SKIP_EXPAND, text or ""):
@@ -626,7 +644,7 @@ def run(page: Page, profile: Profile, llm: ChatClient | None = None, overwrite: 
         llm_error = llm_error or err
         for it in items:
             if it.action == "fill":
-                apply_result(it, fill_in_page(page, it))
+                apply_result(it, fill_with_ai_fallback(page, it, profile, llm))
             old = merged.get(it.id)
             # 上一轮填上的字段这一轮会显示为「原值一致」，保留上一轮更有信息量的那条
             if not (old and old.status == "filled" and it.status == "kept"):
