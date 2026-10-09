@@ -16,10 +16,13 @@
   // 北森 phoenix 的选项是 li.phoenix-selectList__listItem，地区选择器是 .area-text-label（2026-10-07 讯飞诊断）
   const OPTION_SEL = '[role="option"], .ant-select-item-option, .el-select-dropdown__item, [class*="option"], [class*="select-item"], '
     + '[class*="dropdown"] li, [class*="menu-item"], [class*="listItem"], [class*="list-item"], [class*="area-text-label"], '
-    + '.ud__select__list__item';  // 飞书招聘。精确类名：选项里还嵌着 ud__select__list__item__check，宽松匹配会让选项被当成「含子选项」而排除（2026-10-09 得物诊断）
+    + '.ud__select__list__item, '
+    + '[class*="Menu-content-item"]';  // Moka（sd-Menu-content-item，2026-10-09 众安诊断）
+  //  // 飞书招聘。精确类名：选项里还嵌着 ud__select__list__item__check，宽松匹配会让选项被当成「含子选项」而排除（2026-10-09 得物诊断）
   const HEADING_SEL = 'h1, h2, h3, h4, h5, h6, legend, [class*="title"], [class*="Title"], [class*="header"], [class*="Header"]';
   const PICKER_SEL = '.ant-picker, .el-date-editor, [class*="date-picker"], [class*="datepicker"], [class*="DatePicker"], [class*="month-picker"]';
-  const PANEL_SEL = '.ant-picker-dropdown, .el-picker-panel, [class*="picker-panel"], [class*="picker-dropdown"], [class*="calendar"], [class*="datepicker"], [class*="date-picker"]';
+  const PANEL_SEL = '.ant-picker-dropdown, .el-picker-panel, [class*="picker-panel"], [class*="picker-dropdown"], [class*="calendar"], [class*="datepicker"], [class*="date-picker"], '
+    + '[class*="panal-menu"]';  // Moka 日期面板的类名就叫 sd-panal-menu-wrapper
   const DATE_PH_RE = /日期|时间|年月|年份|月份|date|month|yyyy/i;
   const ADD_RE = /^[+＋]?\s*(添加|新增|增加)/;
   const DANGER_RE = /提交|投递|申请|确认|保存|submit|apply|confirm/i;
@@ -102,6 +105,15 @@
       if (seen.has(root) || inSeen(root) || !visible(root) || !root.querySelector('input')) return;
       seen.add(root);
       out.push({ el: root, kind: root.querySelectorAll('input').length >= 2 ? 'date_range' : 'date_picker' });
+    });
+
+    // 「年 + 月」下拉组合（Moka：毕业时间 = 年 月；就读时间 = 年 月 ~ 年 月）：当作一个日期控件
+    document.querySelectorAll('[class*="month-range"]').forEach((el) => {
+      if (seen.has(el) || inSeen(el) || !visible(el) || el.closest('[class*="dropdown"], [class*="popup"]')) return;
+      const n = yearMonthSelects(el).length;
+      if (n < 2) return;
+      seen.add(el);
+      out.push({ el, kind: n >= 4 ? 'date_range' : 'date_picker' });
     });
 
     // 自定义下拉
@@ -878,7 +890,12 @@
   function readPanel(panel) {
     const headers = [...panel.querySelectorAll('[class*="header"]')]
       .filter((h) => visible(h) && !h.querySelector('td, [class*="cell"]'));
-    const header = headers.find((h) => /\d{4}/.test(h.innerText)) || headers[0] || panel;
+    let header = headers.find((h) => /\d{4}/.test(h.innerText)) || headers[0] || null;
+    if (!header) {
+      // 标题没有叫 header 的类（Moka：sd-basic-selector）：以「2000年」「2000年5月」那一小块文字所在的条为标题
+      const yl = [...panel.querySelectorAll('*')].find((e) => !e.children.length && /^\d{4}\s*年(\s*\d{1,2}\s*月)?$/.test(clean(e.innerText)));
+      header = yl ? (yl.closest('[class*="selector"]') || yl.parentElement) : panel;
+    }
     const ht = clean(header.innerText);
     const hy = ht.match(/(\d{4})/);
     let hm = ht.match(/(\d{1,2})\s*月/);
@@ -899,8 +916,8 @@
       years: leaves.filter((e) => /^\d{4}$/.test(clean(e.innerText))),
       months: leaves.filter((e) => monthOf(clean(e.innerText))),
       days,
-      prevYear: buttonIn(panel, /super-prev|prev-year|d-arrow-left|double-left|year-prev|prevyear/i, /上一年|previous year/i, ['«']),
-      nextYear: buttonIn(panel, /super-next|next-year|d-arrow-right|double-right|year-next|nextyear/i, /下一年|next year/i, ['»']),
+      prevYear: buttonIn(panel, /super-prev|prev-year|d-arrow-left|double-?left|year-prev|prevyear/i, /上一年|previous year/i, ['«']),
+      nextYear: buttonIn(panel, /super-next|next-year|d-arrow-right|double-?right|year-next|nextyear/i, /下一年|next year/i, ['»']),
       prevMonth: buttonIn(panel, /(^|[\s_-])prev(-btn|-month|$|\s)|arrow-left|month-prev/i, /上个月|上一月|previous month/i, ['‹', '<'], true),
       nextMonth: buttonIn(panel, /(^|[\s_-])next(-btn|-month|$|\s)|arrow-right|month-next/i, /下个月|下一月|next month/i, ['›', '>'], true),
       yearLabel: [...header.querySelectorAll('*')].find((e) => /^\d{4}\s*年?$/.test(clean(e.innerText)) && !e.children.length) || null,
@@ -1010,7 +1027,33 @@
     return null;
   }
 
+  // 年 / 月是两个下拉框（占位文字「年」「月」）：依次打开、选中。每个下拉复用普通下拉的打开 / 搜索 / 核对逻辑
+  function yearMonthSelects(root) {
+    if (!root || root.tagName === 'INPUT') return [];
+    return [...root.querySelectorAll('[class*="Select-container"]')].filter((s) => {
+      const i = s.querySelector('input');
+      return i && /^(年|月)$/.test((i.getAttribute('placeholder') || '').trim());
+    });
+  }
+
+  async function fillYearMonth(root, isos) {
+    const sels = yearMonthSelects(root);
+    if (sels.length < isos.length * 2) return { ok: false, reason: `年月下拉框数量不对（${sels.length} 个）` };
+    const pad = (n) => String(n).padStart(2, '0');
+    for (let k = 0; k < isos.length; k++) {
+      const t = dateParts(isos[k]);
+      if (!t || !t.y || !t.m) return { ok: false, reason: `日期「${isos[k]}」缺年或月` };
+      const who = isos.length > 1 ? (k === 0 ? '开始' : '结束') : '';
+      const y = await fillCustomSelect(sels[2 * k], [String(t.y), `${t.y}年`], {});
+      if (!y.ok) return { ok: false, reason: `${who}年份：${y.reason}`, options: y.options };
+      const m = await fillCustomSelect(sels[2 * k + 1], [`${t.m}月`, String(t.m), pad(t.m), `${pad(t.m)}月`], {});
+      if (!m.ok) return { ok: false, reason: `${who}月份：${m.reason}`, options: m.options };
+    }
+    return { ok: true, chosen: isos.join(' ~ '), via: 'year-month selects' };
+  }
+
   async function fillDate(root, text, iso, selectLike) {
+    if (yearMonthSelects(root).length >= 2) return fillYearMonth(root, [iso]);
     const inp = root.tagName === 'INPUT' ? root : root.querySelector('input');
     const isDisabled = () => (inp && inp.disabled) || /disabled/.test(typeof root.className === 'string' ? root.className : '');
     let note = '';
@@ -1045,6 +1088,7 @@
   }
 
   async function fillDateRange(root, texts, isos) {
+    if (yearMonthSelects(root).length >= 4) return fillYearMonth(root, isos);
     const inputs = [...root.querySelectorAll('input')].slice(0, 2);
     const done = () => inputs.every((inp, k) => sameDate(inp.value, isos[k]));
     for (let k = 0; k < 2; k++) await typeDate(inputs[k], texts[k]);
@@ -1237,11 +1281,25 @@
     document.body.appendChild(box);
   }
 
+  // 没有标签的字段：记下它周围的 HTML，看标签到底在哪（只在导出诊断时用）
+  function unlabeledContext(fields) {
+    const tidy = (h) => h.replace(/<svg[\s\S]*?<\/svg>/g, '<svg/>').replace(/\s(style|fieldinfo|callingcodelist)="[^"]*"/g, '');
+    return fields.filter((f) => !f.label && f.kind !== 'file' && f.kind !== 'checkbox').slice(0, 14).map((f) => {
+      const el = document.querySelector('[' + ATTR + '="' + f.id + '"]');
+      let box = el;
+      for (let i = 0; box && box.parentElement && i < 5; i++) {
+        box = box.parentElement;
+        if (clean(box.innerText || '').length > 0) break;
+      }
+      return { id: f.id, kind: f.kind, placeholder: f.placeholder, html: box ? tidy(box.outerHTML).slice(0, 1800) : '' };
+    });
+  }
+
   // 诊断：逐个打开下拉 / 日期控件，记下控件本身和弹出来的结构，然后关掉。不填任何值。
   // 用来适配新站点：工具「打不开」的控件，看它打开后到底长什么样。
   async function diagnose(limit) {
     const { fields, addButtons } = extract();
-    const out = { url: location.href, title: document.title, fields, addButtons, probes: [] };
+    const out = { url: location.href, title: document.title, fields, addButtons, probes: [], unlabeled: unlabeledContext(fields) };
     const targets = fields.filter((f) => ['custom_select', 'cascader', 'date_picker', 'date_range'].includes(f.kind));
     for (const f of targets.slice(0, limit || 15)) {
       const root = document.querySelector('[' + ATTR + '="' + f.id + '"]');

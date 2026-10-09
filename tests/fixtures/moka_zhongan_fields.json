@@ -1,0 +1,471 @@
+{
+ "url": "https://app.mokahr.com/campus-recruitment/zhongan/71908",
+ "fields": [
+  {
+   "id": "f0",
+   "kind": "text",
+   "label": "招聘流程 公司介绍 更多",
+   "options": [],
+   "placeholder": "输入职位关键字",
+   "section": "",
+   "sectionTrail": [],
+   "hint": ""
+  },
+  {
+   "id": "f1",
+   "kind": "text",
+   "label": "输入职位关键字",
+   "options": [],
+   "placeholder": "输入职位关键字",
+   "section": "",
+   "sectionTrail": [],
+   "hint": ""
+  },
+  {
+   "id": "f2",
+   "kind": "text",
+   "label": "选择意向工作城市",
+   "options": [],
+   "placeholder": "选择意向工作城市",
+   "section": "申请信息",
+   "sectionTrail": [
+    "申请信息",
+    "申请信息",
+    "[2027届秋招-上海]数据开发工程师",
+    "众安在线财产保险股份有限公司"
+   ],
+   "hint": ""
+  },
+  {
+   "id": "f3",
+   "kind": "text",
+   "label": "推荐码",
+   "options": [],
+   "placeholder": "推荐码",
+   "section": "申请信息",
+   "sectionTrail": [
+    "申请信息",
+    "申请信息",
+    "[2027届秋招-上海]数据开发工程师",
+    "众安在线财产保险股份有限公司"
+   ],
+   "hint": ""
+  },
+  {
+   "id": "f4",
+   "kind": "text",
+   "label": "姓名",
+   "options": [],
+   "placeholder": "姓名",
+   "section": "个人信息",
+   "sectionTrail": [
+    "个人信息",
+    "个人信息",
+    "申请信息",
+    "申请信息",
+    "[2027届秋招-上海]数据开发工程师"
+   ],
+   "hint": ""
+  },
+  {
+   "id": "f5",
+   "kind": "text",
+   "label": "",
+   "options": [],
+   "placeholder": "",
+   "section": "手机号码",
+   "sectionTrail": [
+    "手机号码",
+    "个人信息",
+    "个人信息",
+    "申请信息",
+    "申请信息"
+   ],
+   "hint": ""
+  },
+  {
+   "id": "f6",
+   "kind": "text",
+   "label": "请输入手机号",
+   "options": [],
+   "placeholder": "请输入手机号",
+   "section": "手机号码",
+   "sectionTrail": [
+    "手机号码",
+    "个人信息",
+    "个人信息",
+    "申请信息",
+    "申请信息"
+   ],
+   "hint": ""
+  },
+  {
+   "id": "f7",
+   "kind": "text",
+   "label": "邮箱",
+   "options": [],
+   "placeholder": "邮箱",
+   "section": "手机号码",
+   "sectionTrail": [
+    "手机号码",
+    "个人信息",
+    "个人信息",
+    "申请信息",
+    "申请信息"
+   ],
+   "hint": ""
+  },
+  {
+   "id": "f8",
+   "kind": "text",
+   "label": "",
+   "options": [],
+   "placeholder": "请选择",
+   "section": "手机号码",
+   "sectionTrail": [
+    "手机号码",
+    "个人信息",
+    "个人信息",
+    "申请信息",
+    "申请信息"
+   ],
+   "hint": ""
+  },
+  {
+   "id": "f9",
+   "kind": "date_picker",
+   "label": "出生日期 (年龄)",
+   "options": [],
+   "placeholder": "出生日期 (年龄)",
+   "section": "手机号码",
+   "sectionTrail": [
+    "手机号码",
+    "个人信息",
+    "个人信息",
+    "申请信息",
+    "申请信息"
+   ],
+   "hint": ""
+  },
+  {
+   "id": "f10",
+   "kind": "text",
+   "label": "",
+   "options": [],
+   "placeholder": "请选择",
+   "section": "手机号码",
+   "sectionTrail": [
+    "手机号码",
+    "个人信息",
+    "个人信息",
+    "申请信息",
+    "申请信息"
+   ],
+   "hint": ""
+  },
+  {
+   "id": "f11",
+   "kind": "custom_select",
+   "label": "毕业时间",
+   "options": [],
+   "placeholder": "年",
+   "section": "手机号码",
+   "sectionTrail": [
+    "手机号码",
+    "个人信息",
+    "个人信息",
+    "申请信息",
+    "申请信息"
+   ],
+   "hint": ""
+  },
+  {
+   "id": "f12",
+   "kind": "text",
+   "label": "",
+   "options": [],
+   "placeholder": "请选择",
+   "section": "手机号码",
+   "sectionTrail": [
+    "手机号码",
+    "个人信息",
+    "个人信息",
+    "申请信息",
+    "申请信息"
+   ],
+   "hint": ""
+  },
+  {
+   "id": "f13",
+   "kind": "text",
+   "label": "",
+   "options": [],
+   "placeholder": "请选择",
+   "section": "手机号码",
+   "sectionTrail": [
+    "手机号码",
+    "个人信息",
+    "个人信息",
+    "申请信息",
+    "申请信息"
+   ],
+   "hint": ""
+  },
+  {
+   "id": "f14",
+   "kind": "text",
+   "label": "简单描述1个你认为你用AI解决的最有趣/最有价值的一个场景（信息需要包括背景、解决什么问题、用了什么工具、结果如何）",
+   "options": [],
+   "placeholder": "简单描述1个你认为你用AI解决的最有趣/最有价值的一个场景（信息需要包括背景、解决什么问题、用了什么工具、结果如何）",
+   "section": "手机号码",
+   "sectionTrail": [
+    "手机号码",
+    "个人信息",
+    "个人信息",
+    "申请信息",
+    "申请信息"
+   ],
+   "hint": ""
+  },
+  {
+   "id": "f15",
+   "kind": "custom_select",
+   "label": "就读时间",
+   "options": [],
+   "placeholder": "年",
+   "section": "教育背景",
+   "sectionTrail": [
+    "教育背景",
+    "教育背景 添加",
+    "手机号码",
+    "个人信息",
+    "个人信息"
+   ],
+   "hint": ""
+  },
+  {
+   "id": "f16",
+   "kind": "text",
+   "label": "学校名称",
+   "options": [],
+   "placeholder": "请输入就读学校",
+   "section": "教育背景",
+   "sectionTrail": [
+    "教育背景",
+    "教育背景 添加",
+    "手机号码",
+    "个人信息",
+    "个人信息"
+   ],
+   "hint": ""
+  },
+  {
+   "id": "f17",
+   "kind": "text",
+   "label": "专业名称",
+   "options": [],
+   "placeholder": "请输入专业名称",
+   "section": "教育背景",
+   "sectionTrail": [
+    "教育背景",
+    "教育背景 添加",
+    "手机号码",
+    "个人信息",
+    "个人信息"
+   ],
+   "hint": ""
+  },
+  {
+   "id": "f18",
+   "kind": "text",
+   "label": "",
+   "options": [],
+   "placeholder": "请选择",
+   "section": "教育背景",
+   "sectionTrail": [
+    "教育背景",
+    "教育背景 添加",
+    "手机号码",
+    "个人信息",
+    "个人信息"
+   ],
+   "hint": ""
+  },
+  {
+   "id": "f23",
+   "kind": "custom_select",
+   "label": "就读时间",
+   "options": [],
+   "placeholder": "年",
+   "section": "教育背景",
+   "sectionTrail": [
+    "教育背景",
+    "教育背景 添加",
+    "手机号码",
+    "个人信息",
+    "个人信息"
+   ],
+   "hint": ""
+  },
+  {
+   "id": "f24",
+   "kind": "text",
+   "label": "学校名称",
+   "options": [],
+   "placeholder": "请输入就读学校",
+   "section": "教育背景",
+   "sectionTrail": [
+    "教育背景",
+    "教育背景 添加",
+    "手机号码",
+    "个人信息",
+    "个人信息"
+   ],
+   "hint": ""
+  },
+  {
+   "id": "f25",
+   "kind": "text",
+   "label": "专业名称",
+   "options": [],
+   "placeholder": "请输入专业名称",
+   "section": "教育背景",
+   "sectionTrail": [
+    "教育背景",
+    "教育背景 添加",
+    "手机号码",
+    "个人信息",
+    "个人信息"
+   ],
+   "hint": ""
+  },
+  {
+   "id": "f26",
+   "kind": "text",
+   "label": "",
+   "options": [],
+   "placeholder": "请选择",
+   "section": "教育背景",
+   "sectionTrail": [
+    "教育背景",
+    "教育背景 添加",
+    "手机号码",
+    "个人信息",
+    "个人信息"
+   ],
+   "hint": ""
+  },
+  {
+   "id": "f27",
+   "kind": "custom_select",
+   "label": "就读时间",
+   "options": [],
+   "placeholder": "年",
+   "section": "教育背景",
+   "sectionTrail": [
+    "教育背景",
+    "教育背景 添加",
+    "手机号码",
+    "个人信息",
+    "个人信息"
+   ],
+   "hint": ""
+  },
+  {
+   "id": "f28",
+   "kind": "text",
+   "label": "学校名称",
+   "options": [],
+   "placeholder": "请输入就读学校",
+   "section": "教育背景",
+   "sectionTrail": [
+    "教育背景",
+    "教育背景 添加",
+    "手机号码",
+    "个人信息",
+    "个人信息"
+   ],
+   "hint": ""
+  },
+  {
+   "id": "f29",
+   "kind": "text",
+   "label": "专业名称",
+   "options": [],
+   "placeholder": "请输入专业名称",
+   "section": "教育背景",
+   "sectionTrail": [
+    "教育背景",
+    "教育背景 添加",
+    "手机号码",
+    "个人信息",
+    "个人信息"
+   ],
+   "hint": ""
+  },
+  {
+   "id": "f30",
+   "kind": "text",
+   "label": "",
+   "options": [],
+   "placeholder": "请选择",
+   "section": "教育背景",
+   "sectionTrail": [
+    "教育背景",
+    "教育背景 添加",
+    "手机号码",
+    "个人信息",
+    "个人信息"
+   ],
+   "hint": ""
+  },
+  {
+   "id": "f19",
+   "kind": "file",
+   "label": "支持pdf、doc、ppt、docx、pptx、wps、jpg、jpeg、png、txt等简历格式。上传附加简历后，会自动解析、填充申请表信息。",
+   "options": [],
+   "placeholder": "",
+   "section": "上传",
+   "sectionTrail": [
+    "上传",
+    "上传",
+    "教育背景",
+    "教育背景 添加",
+    "手机号码"
+   ],
+   "hint": "resumeKey"
+  },
+  {
+   "id": "f20",
+   "kind": "file",
+   "label": "支持文档、图片、压缩包、视频、音频、设计文件等格式文件。上传单个文件容量不超过 50 MB",
+   "options": [],
+   "placeholder": "",
+   "section": "上传",
+   "sectionTrail": [
+    "上传",
+    "上传",
+    "教育背景",
+    "教育背景 添加",
+    "手机号码"
+   ],
+   "hint": ""
+  },
+  {
+   "id": "f21",
+   "kind": "checkbox",
+   "label": "同步更新在线简历",
+   "options": [],
+   "placeholder": "",
+   "section": "更新说明",
+   "sectionTrail": [
+    "更新说明",
+    "上传",
+    "上传",
+    "教育背景",
+    "教育背景 添加"
+   ],
+   "hint": ""
+  }
+ ]
+}

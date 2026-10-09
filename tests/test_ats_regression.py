@@ -228,3 +228,44 @@ def test_char_counter_text_is_never_taken_as_the_question(page, profile, tmp_pat
     page.evaluate("() => { const i = document.querySelector('[data-key=ai_story]'); i.value = 'x'.repeat(260); i.dispatchEvent(new Event('input')); }")
     labels = page.evaluate("() => window.__autofill.extract().fields.map((f) => f.label)")
     assert not any(l.startswith("超出") for l in labels), labels
+
+
+# ---------- Moka（众安保险，sd- 组件） ----------
+
+def test_moka_zhongan_labels(profile):
+    rows = mapped("moka_zhongan_fields.json", profile)
+    assert find(rows, label="出生日期")[0][1].key == "basic.birth_date"
+    assert find(rows, label="毕业时间")[0][1].key == "education.end"
+    assert find(rows, label="姓名")[0][1].key == "basic.name"
+    assert {it.key for _, it in find(rows, label="学校名称")} == {"education.school"}
+    assert {it.key for _, it in find(rows, label="专业名称")} == {"education.major"}
+
+
+def test_moka_open_question_uses_fixed_answer(profile):
+    p = _with_answers(profile, **{"用AI解决的.*场景": "背景：A。\n---\n背景：B。"})
+    rows = []
+    fields = annotate([dict(f, value="") for f in json.loads((FIX / "moka_zhongan_fields.json").read_text("utf-8"))["fields"]])
+    items, _ = plan(fields, p, None)
+    hit = [it for f, it in zip(fields, items) if f["label"].startswith("简单描述1个")]
+    assert hit and hit[0].key == "answer:用AI解决的.*场景"
+
+
+def test_moka_sd_demo_year_month_selects_and_date_panel(page, profile, tmp_path):
+    page.goto(demo_url("moka_sd_style"))
+    report = run(page, profile, report_dir=tmp_path)
+    got = page.evaluate("() => window.__formValues()")
+    assert got["grad"] == "2026-12"  # 毕业时间 = 年下拉 + 月下拉
+    assert got["period"] == "2025-09~2026-12"  # 就读时间 = 起止各一对，共 4 个下拉
+    assert got["birth"] == "2000-05-01"  # sd-panal 日期面板：双箭头翻年 → 点月 → 点日
+    assert got["name"] == "张三" and got["school"] == "示例大学" and got["__submitted"] is False
+    bad = [i["label"] for i in report["items"] if i["status"] in ("unfilled", "uncertain")]
+    assert not bad, bad
+
+
+def test_diagnose_records_context_of_unlabeled_fields(page):
+    from autofill.pipeline import extract
+
+    page.goto(demo_url("feishu_ud_style"))
+    extract(page)  # 注入页面脚本
+    data = page.evaluate("async () => await window.__autofill.diagnose(3)")
+    assert "unlabeled" in data and any("<" in u["html"] for u in data["unlabeled"])
