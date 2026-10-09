@@ -4,7 +4,7 @@
 (() => {
   // 同一版本已注入就跳过；版本不同（插件更新过）就整个替换掉旧代码。
   // 以前只判断「有没有」，结果插件更新后，开着的网申页里跑的还是旧代码。
-  const VERSION = 'c750c2646f97';
+  const VERSION = '5c0bde8a671b';
   if (window.__autofill && window.__autofill.version === VERSION) return;
 
   const ATTR = 'data-af-id';
@@ -43,7 +43,8 @@
   }
 
   // 「221 / 2000」字数计数器、「请输入」「选填」这类占位文字不是标签（讯飞、OPPO 实测）
-  const NOT_LABEL = /^(\d+\s*\/\s*\d+|请输入|请填写|请选择|选填|必填|请输入内容)$/;
+  // 字数提示（「超出 267 个字符」「还能输入 20 字」）也不是标签（得物 2026-10-09：超限后题目被它顶替了）
+  const NOT_LABEL = /^(\d+\s*\/\s*\d+|请输入|请填写|请选择|选填|必填|请输入内容|超出\s*\d+\s*个?(字|字符)|还(能|可)输入\s*\d+\s*个?(字|字符)?)$/;
   function cleanLabel(t) {
     return clean(clean(t).replace(/\d+\s*\/\s*\d+\s*$/, '').replace(/\s*(必填|选填)$/, ''));
   }
@@ -1058,6 +1059,67 @@
       : { ok: false, reason: `范围选择后值为「${inputs.map((i) => i.value).join(' ~ ')}」` };
   }
 
+  // ---------- 文本框：换行、字数上限、长短版本 ----------
+
+  // 单行输入框会吞掉换行，写进去的值就和候选值不一样（得物 2026-10-09：470 字的回答被判成「填写失败」）
+  function forSingleLine(text) {
+    return text.replace(/\s*\n+\s*/g, (m, off, s) => (/[。！？；，、.!?;,:：]$/.test(s.slice(0, off)) ? '' : ' '));
+  }
+
+  // 页面上的字数上限：maxlength，或「超出 267 个字符」「还能输入 20 字」「123/200」这类计数
+  function charLimit(el, written) {
+    if (el.maxLength > 0 && el.maxLength < 100000) return el.maxLength;
+    let box = el;
+    for (let i = 0; i < 4 && box.parentElement; i++) {
+      box = box.parentElement;
+      if (box.querySelectorAll('input, textarea').length > 1) break;
+    }
+    const t = clean(box.innerText || '');
+    let m = t.match(/超出\s*(\d+)\s*个?(字|字符)/);
+    if (m) return Math.max(0, written - Number(m[1]));
+    m = t.match(/(\d+)\s*\/\s*(\d+)/);
+    if (m && Number(m[2]) >= 10 && Number(m[1]) >= 0) return Number(m[2]);
+    m = t.match(/(?:最多|不超过|限|至多)\s*(\d+)\s*个?(字|字符)/);
+    return m ? Number(m[1]) : 0;
+  }
+
+  // 超出上限时截到最后一个句末标点，保证是完整的句子
+  function cutToLimit(text, limit) {
+    const head = text.slice(0, limit);
+    const k = Math.max(head.lastIndexOf('。'), head.lastIndexOf('；'), head.lastIndexOf('！'), head.lastIndexOf('？'));
+    return k > limit * 0.5 ? head.slice(0, k + 1) : head;
+  }
+
+  async function fillTextValue(el, candidates, kind) {
+    const single = el.tagName === 'INPUT';
+    const list = candidates.map((c) => (single ? forSingleLine(c) : c));
+    const write = (v) => {
+      el.focus();
+      setNativeValue(el, v);
+      el.dispatchEvent(new Event('blur', { bubbles: true }));
+      el.blur();
+    };
+    let value = list[0];
+    write(value);
+    // 日期 / 短文本不会有字数问题；长文本才等站点的计数更新后检查
+    if (value.length < 30 || kind === 'date' || kind === 'month') return { ok: el.value === value, chosen: el.value };
+    await sleep(250);
+    const limit = charLimit(el, value.length);
+    if (limit > 0 && value.length > limit) {
+      const fit = list.filter((c) => c.length <= limit).sort((a, b) => b.length - a.length)[0];
+      if (fit) {
+        value = fit;
+        write(value);
+        return { ok: el.value === value, chosen: el.value, note: `网站限 ${limit} 字，用了较短的版本（${value.length} 字）` };
+      }
+      value = cutToLimit(list[list.length - 1], limit);
+      write(value);
+      return { ok: el.value === value, chosen: el.value, truncated: true,
+        note: `网站限 ${limit} 字，资料里的答案放不下，已截取到 ${value.length} 字，请检查或手动改写` };
+    }
+    return { ok: el.value === value, chosen: el.value };
+  }
+
   async function fill(id, kind, candidates, meta) {
     meta = meta || {};
     const el = document.querySelector('[' + ATTR + '="' + id + '"]');
@@ -1068,11 +1130,7 @@
 
     if (kind === 'text' || kind === 'textarea' || kind === 'date' || kind === 'month') {
       if (el.readOnly) return { ok: false, reason: 'readonly (picker widget)' };
-      el.focus();
-      setNativeValue(el, candidates[0]);
-      el.dispatchEvent(new Event('blur', { bubbles: true }));
-      el.blur();
-      return { ok: el.value === candidates[0], chosen: el.value };
+      return fillTextValue(el, candidates, kind);
     }
     if (kind === 'select') {
       const opts = [...el.options].filter((o) => o.value !== '');

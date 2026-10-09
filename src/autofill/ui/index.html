@@ -97,6 +97,12 @@
               <b>上传简历</b>：把 PDF / Word 拖到这里，或 <button class="link" id="pick">选择文件</button>
               <div id="resume-name" class="muted"></div>
             </div>
+            <div id="drop2" class="drop" tabindex="0">
+              <input type="file" id="file2" accept=".zip,.pdf,.rar,.7z" hidden>
+              <b>作品集</b>（可选）：把 .zip / .pdf 拖到这里，或 <button class="link" id="pick2">选择文件</button>
+              <span class="muted small">≤ 30MB；遇到作品集上传框时插件会传它。zip 里的 README 可导入知识库</span>
+              <div><span id="portfolio-name-ui" class="muted"></span> <button class="mini danger" id="del-portfolio" hidden>移除</button></div>
+            </div>
             <div class="row">
               <button class="primary" id="ingest">AI 整理进资料</button>
               <label class="check"><input type="checkbox" id="overwrite"> 覆盖已有内容</label>

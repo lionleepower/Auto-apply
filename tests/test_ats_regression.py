@@ -139,3 +139,92 @@ def test_filled_select_value_is_not_taken_as_its_label(page, profile, tmp_path):
     run(page, profile, report_dir=tmp_path)
     labels = page.evaluate("() => window.__autofill.extract().fields.map((f) => f.label)")
     assert "性别" in labels and "学历" in labels and "男" not in labels and "硕士" not in labels
+
+
+# ---------- 作品集、字数上限、单行输入框 ----------
+
+LONG = "背景：我同时投递约 70 家公司，表单各不相同。\n方案：与 AI 协作开发自动填写工具，我定边界并验收。\n" + "补充说明" * 60
+SHORT = "背景：同时投递约 70 家，表单各不相同。方案：与 AI 协作开发“只填不交”的自动填写工具，我定边界并验收。"
+
+
+def _with_answers(profile, **answers):
+    p = profile.model_copy(deep=True)
+    p.answers = {k: v for k, v in answers.items()}
+    return p
+
+
+def test_multiline_answer_in_single_line_input_is_not_a_failure(page, profile, tmp_path):
+    # 单行输入框会吞掉换行：值和候选值不一样，曾被判成「填写失败」（得物）
+    p = _with_answers(profile, **{"常用的.*AI.*工具": "编码协作：Claude Code。\n大模型 API：DeepSeek。"})
+    page.goto(demo_url("portfolio_style"))
+    report = run(page, p, report_dir=tmp_path)
+    got = page.evaluate("() => window.__formValues()")
+    assert got["ai_tools"] == "编码协作：Claude Code。大模型 API：DeepSeek。"
+    item = next(i for i in report["items"] if "常用的" in i["label"])
+    assert item["status"] == "filled", item
+
+
+def test_over_limit_switches_to_the_short_version(page, profile, tmp_path):
+    assert len(LONG) > 200 and len(SHORT) <= 200
+    p = _with_answers(profile, **{"与.*AI.*协作": LONG + "\n---\n" + SHORT})
+    page.goto(demo_url("portfolio_style"))
+    report = run(page, p, report_dir=tmp_path)
+    assert page.evaluate("() => window.__formValues()")["ai_story"] == SHORT
+    item = next(i for i in report["items"] if "协作" in i["label"])
+    assert item["status"] == "filled" and "较短的版本" in item["note"], item
+
+
+def test_over_limit_without_short_version_is_cut_and_flagged(page, profile, tmp_path):
+    p = _with_answers(profile, **{"与.*AI.*协作": LONG})
+    page.goto(demo_url("portfolio_style"))
+    report = run(page, p, report_dir=tmp_path)
+    got = page.evaluate("() => window.__formValues()")["ai_story"]
+    assert 0 < len(got) <= 200 and LONG.replace("\n", "").startswith(got)  # 只截取，不改写
+    item = next(i for i in report["items"] if "协作" in i["label"])
+    assert item["status"] == "uncertain" and "已截取" in item["note"], item  # 必须让人看到
+
+
+def test_portfolio_upload_and_links(page, profile, tmp_path):
+    cv, zp = tmp_path / "cv.pdf", tmp_path / "my_portfolio.zip"
+    cv.write_bytes(b"%PDF-1.4 demo")
+    zp.write_bytes(b"PK\x03\x04 demo")
+    p = profile.model_copy(update={"resume_file": str(cv), "portfolio_file": str(zp)})
+    p.basic.github = "github.com/zhangsan-demo"
+    page.goto(demo_url("portfolio_style"))
+    report = run(page, p, report_dir=tmp_path, upload=True)
+    got = page.evaluate("() => window.__formValues()")
+    assert got["resume"] == "cv.pdf" and got["portfolio"] == "my_portfolio.zip"  # 各传各的框
+    assert "已上传简历：cv.pdf" in report["upload"] and "已上传作品集：my_portfolio.zip" in report["upload"]
+    assert got["work_url"] == "github.com/zhangsan-demo"  # 作品链接缺省用 GitHub
+    assert got["__submitted"] is False
+
+
+def test_portfolio_description_is_built_from_project_links(profile):
+    from autofill.pipeline import Item, resolve
+
+    p = profile.model_copy(deep=True)
+    p.projects[0].url = "github.com/zhangsan-demo/agent"
+    it = Item(id="f1", label="作品描述", section="获奖信息", section_kind="award", kind="text", index=0)
+    it.key = "portfolio.desc"
+    resolve(it, {"placeholder": "", "label": "作品描述", "kind": "text", "id": "f1"}, p, {})
+    assert "github.com/zhangsan-demo/agent" in it.candidates[0] and p.projects[0].name in it.candidates[0]
+
+
+def test_portfolio_target_ignores_resume_and_other_attachments():
+    from autofill.pipeline import pick_portfolio_field
+
+    fields = [{"kind": "file", "label": "上传简历", "section": "附件简历", "id": "a"},
+              {"kind": "file", "label": "上传论文 仅支持 pdf", "section": "学术成果", "id": "b"},
+              {"kind": "file", "label": "拖拽/点击上传您的作品集", "section": "作品", "id": "c"}]
+    assert pick_portfolio_field(fields)["id"] == "c"
+    assert pick_portfolio_field(fields[:2]) is None
+
+
+def test_char_counter_text_is_never_taken_as_the_question(page, profile, tmp_path):
+    # 超限后站点在题目旁显示「超出 N 个字符」；再次填写时题目不能被它顶替
+    p = _with_answers(profile, **{"与.*AI.*协作": LONG})
+    page.goto(demo_url("portfolio_style"))
+    run(page, p, report_dir=tmp_path)  # 第一次：只放得下截取版，计数提示可能还在
+    page.evaluate("() => { const i = document.querySelector('[data-key=ai_story]'); i.value = 'x'.repeat(260); i.dispatchEvent(new Event('input')); }")
+    labels = page.evaluate("() => window.__autofill.extract().fields.map((f) => f.label)")
+    assert not any(l.startswith("超出") for l in labels), labels

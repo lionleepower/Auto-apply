@@ -66,8 +66,9 @@ BASIC_GROUPS = [
          "political_status": "政治面貌", "ethnicity": "民族", "hometown": "籍贯 / 生源地", "current_city": "现居城市",
          "expected_city": "期望工作城市", "job_intention": "求职意向", "available": "到岗时间", "english": "英语水平",
          "name_en": "英文姓名", "github": "GitHub", "homepage": "个人主页",
+         "portfolio": "作品集链接",
      }, gender={"type": "select", "options": ["男", "女"]}, birth_date={"placeholder": "2001-05-20"},
-         expected_city={"placeholder": "上海，杭州"}, available={"placeholder": "随时到岗 / 2026-07"},
+         expected_city={"placeholder": "上海，杭州"}, portfolio={"placeholder": "留空则使用 GitHub 链接"}, available={"placeholder": "随时到岗 / 2026-07"},
          english={"placeholder": "雅思 7.0 / 六级 580"}, name_en={"placeholder": "San Zhang"})},
     {"id": "overseas", "title": "海外申请信息", "shared": True, "open": False,
      "hint": "投英文表单（Greenhouse / Lever / Workday 等）时用到；名和姓留空时会从英文姓名自动拆。",
@@ -108,7 +109,7 @@ SCHEMA = {
 
 
 def _profile_json(p: Profile) -> dict:
-    return p.model_dump(include={"basic", *VARIANT_FIELDS} - {"resume_file"})
+    return p.model_dump(include={"basic", *VARIANT_FIELDS} - {"resume_file", "portfolio_file"})
 
 
 def _load_doc() -> Profile:
@@ -142,11 +143,13 @@ def _state(rid: str | None = None, doc: Profile | None = None) -> dict:
         "id_autofill": ID_KEY not in flat.never_fill,
         "resumes": [{"id": r.id, "name": r.name, "locale": r.locale,
                      "resume": Path(r.resume_file).name if _exists(r.resume_file) else None,
+                     "portfolio": Path(r.portfolio_file).name if _exists(r.portfolio_file) else None,
                      "counts": {"education": len(r.education), "experience": len(r.experience),
                                 "projects": len(r.projects), "papers": len(r.papers)}} for r in doc.resumes],
         "current": v.id, "default": find_variant(doc).id, "locale": v.locale,
         "missing": knowledge.missing(flat), "completeness": knowledge.completeness(flat),
         "notes": notes, "resume": Path(v.resume_file).name if _exists(v.resume_file) else None,
+        "portfolio": Path(v.portfolio_file).name if _exists(v.portfolio_file) else None,
         "llm": _llm_view(), "ai_ready": build_client("auto") is not None,
     }
 
@@ -192,7 +195,8 @@ def put_profile(body: ProfileIn):
         never.append(ID_KEY)
     try:
         new = Profile.model_validate({**body.profile, "answers": answers, "never_fill": never,
-                                      "resume_file": v.resume_file, "locale": v.locale})
+                                      "resume_file": v.resume_file, "portfolio_file": v.portfolio_file,
+                                      "locale": v.locale})
     except Exception as e:
         raise HTTPException(400, f"资料格式不对：{e}") from e
     knowledge.save_doc(profile_path(), with_flat(doc, v.id, new))
@@ -220,7 +224,8 @@ def new_resume(body: NewResumeIn):
         raise HTTPException(400, "简历类型只能是 cn 或 overseas")
     doc = _load_doc()
     base = _variant_or_404(doc, body.copy_from).model_copy(deep=True) if body.copy_from else ResumeVariant()
-    base.id, base.name, base.locale, base.resume_file = _new_id(doc), body.name.strip() or "新简历", body.locale, None
+    base.id, base.name, base.locale = _new_id(doc), body.name.strip() or "新简历", body.locale
+    base.resume_file = base.portfolio_file = None
     doc.resumes.append(base)
     knowledge.save_doc(profile_path(), doc)
     return _state(base.id, doc)
@@ -259,8 +264,7 @@ def delete_resume(rid: str):
         doc.active_resume = doc.resumes[0].id
     knowledge.save_doc(profile_path(), doc)
     notes_path(rid).unlink(missing_ok=True)
-    if v.resume_file and Path(v.resume_file).parent == resume_dir() / rid:  # 只清理助手自己存的文件
-        shutil.rmtree(resume_dir() / rid, ignore_errors=True)
+    shutil.rmtree(resume_dir() / rid, ignore_errors=True)  # 只清理助手自己存的这份简历的文件夹
     return _state(None, doc)
 
 
@@ -340,6 +344,55 @@ def upload_resume(body: ResumeIn):
     v.resume_file = str(dest)
     knowledge.save_doc(profile_path(), doc)
     return {"name": name, "text": text, "chars": len(text)}
+
+
+PORTFOLIO_MAX = 30 * 1024 * 1024  # 站点上限多为 50MB；插件把文件转成 base64 传给页面，太大会卡
+
+
+class PortfolioIn(BaseModel):
+    name: str
+    b64: str
+    resume: str | None = None
+
+
+@router.post("/portfolio")
+def upload_portfolio(body: PortfolioIn):
+    """保存作品集文件（zip / pdf …）。zip 里的 README 等文字一并返回，界面可以加入知识库。"""
+    try:
+        data = base64.b64decode(body.b64)
+    except ValueError as e:
+        raise HTTPException(400, "文件内容损坏") from e
+    if len(data) > PORTFOLIO_MAX:
+        raise HTTPException(413, "作品集超过 30MB：请压缩或挑重点，其余用链接代替")
+    name = re.sub(r'[\\/:*?"<>|]', "_", Path(body.name).name) or "portfolio.zip"
+    if not name.lower().endswith(knowledge.PORTFOLIO_EXTS):
+        raise HTTPException(400, "作品集支持 .zip / .pdf / .rar / .7z")
+    text = ""
+    if name.lower().endswith(".zip"):
+        try:
+            text = knowledge.extract_zip_text(data)
+        except ValueError as e:
+            raise HTTPException(400, str(e)) from e
+    doc = _load_doc()
+    v = _variant_or_404(doc, body.resume)
+    folder = resume_dir() / v.id / "portfolio"
+    shutil.rmtree(folder, ignore_errors=True)  # 每份简历只留一个作品集
+    folder.mkdir(parents=True, exist_ok=True)
+    dest = folder / name
+    dest.write_bytes(data)
+    v.portfolio_file = str(dest)
+    knowledge.save_doc(profile_path(), doc)
+    return {"name": name, "text": text, "chars": len(text), "size": len(data)}
+
+
+@router.delete("/portfolio")
+def delete_portfolio(resume: str | None = None):
+    doc = _load_doc()
+    v = _variant_or_404(doc, resume)
+    shutil.rmtree(resume_dir() / v.id / "portfolio", ignore_errors=True)
+    v.portfolio_file = None
+    knowledge.save_doc(profile_path(), doc)
+    return _state(v.id, doc)
 
 
 @router.get("/llm")

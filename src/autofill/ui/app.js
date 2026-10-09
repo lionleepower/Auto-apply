@@ -45,7 +45,7 @@ function applyState(st) {
   S.answers = st.answers; S.id_autofill = st.id_autofill;
   S.resumes = st.resumes; S.current = st.current; S.default = st.default; S.locale = st.locale;
   if (st.schema) S.schema = st.schema;
-  S.completeness = st.completeness; S.resume = st.resume; S.ai_ready = st.ai_ready;
+  S.completeness = st.completeness; S.resume = st.resume; S.portfolio = st.portfolio; S.ai_ready = st.ai_ready;
   dirty = false;
   try { localStorage.setItem('resume', S.current); } catch { /* ignore */ }
 }
@@ -66,6 +66,8 @@ function renderAll() {
   renderResumes(); renderMissing(); renderForm(); renderProviders(); renderStart(); renderHint();
   const cur = S.resumes.find((r) => r.id === S.current);
   $('kb-for').textContent = cur ? `· 整理到「${cur.name}」` : '';
+  $('portfolio-name-ui').textContent = S.portfolio ? `这份简历的作品集：${S.portfolio}` : '';
+  $('del-portfolio').hidden = !S.portfolio;
   $('resume-name').textContent = S.resume ? `这份简历已保存文件：${S.resume}（网页上传简历时会用它）` : '';
 }
 
@@ -266,7 +268,7 @@ function qaSection() {
   const draw = () => {
     box.replaceChildren(...list.map((qa, i) => {
       const p = el('input', { placeholder: '问题里出现的词，如：亲属|是否.*关系', 'data-path': `qa.${i}.p` }); p.value = qa.pattern;
-      const a = el('input', { placeholder: '固定答案，如：否' }); a.value = qa.answer;
+      const a = el('textarea', { placeholder: '固定答案，如：否。长答案可以在中间单独一行写 --- 分成长短两版', rows: 2 }); a.value = qa.answer;
       p.addEventListener('input', () => { qa.pattern = p.value; markDirty(); });
       a.addEventListener('input', () => { qa.answer = a.value; markDirty(); });
       return el('div', { class: 'qa' }, p, a, el('button', { class: 'mini danger', onclick: () => { list.splice(i, 1); markDirty(); draw(); } }, '删除'));
@@ -275,7 +277,7 @@ function qaSection() {
   draw();
   return accordion('qa', '常用问答', {
     badges: [{ text: `${list.length} 条`, cls: '' }, { text: '共用', cls: 'share' }],
-    hint: '每家都问、答案固定的问题（如「是否有亲属在本公司任职」→「否」）。左边写问题里的关键词（可用 | 分隔多个，支持正则），右边写答案；匹配到的字段会优先填这里的答案。',
+    hint: '每家都问、答案固定的问题（如「是否有亲属在本公司任职」→「否」）。左边写问题里的关键词（可用 | 分隔多个，支持正则），右边写答案；匹配到的字段会优先填这里的答案。开放题的长答案可以在中间单独写一行 --- 分成「长版 / 短版」：网站有字数上限时自动换用放得下的那一版；都放不下才会截取，并标成待确认。',
   }, box);
 }
 
@@ -359,6 +361,40 @@ $('file').addEventListener('change', (e) => { uploadResume(e.target.files[0]); e
 ['dragenter', 'dragover'].forEach((ev) => drop.addEventListener(ev, (e) => { e.preventDefault(); drop.classList.add('over'); }));
 ['dragleave', 'drop'].forEach((ev) => drop.addEventListener(ev, (e) => { e.preventDefault(); drop.classList.remove('over'); }));
 drop.addEventListener('drop', (e) => uploadResume(e.dataTransfer.files[0]));
+
+// ---------- 作品集 ----------
+async function uploadPortfolio(file) {
+  if (!file) return;
+  if (file.size > 30 * 1024 * 1024) return toast('作品集超过 30MB：请压缩或挑重点，其余用链接代替');
+  const b64 = await new Promise((res, rej) => {
+    const fr = new FileReader();
+    fr.onload = () => res(String(fr.result).split(',')[1]); fr.onerror = rej; fr.readAsDataURL(file);
+  });
+  try {
+    showResult('', `正在保存 ${file.name}…`);
+    const r = await api('POST', '/portfolio', { name: file.name, b64, resume: S.current });
+    S.portfolio = r.name; renderAll();
+    if (r.text) {
+      const box = $('notes');
+      box.value = (box.value.trim() ? box.value.trim() + '\n\n' : '') + r.text;
+      box.dispatchEvent(new Event('input'));
+      showResult('', `已保存作品集 ${r.name}，并把其中的 README / 文档文字（${r.chars} 字）加进了知识库。点「AI 整理进资料」可以并入项目经历。`);
+    } else {
+      showResult('', `已保存作品集 ${r.name}。`);
+    }
+  } catch (e) { showResult('bad', e.message); }
+}
+const drop2 = $('drop2');
+$('pick2').addEventListener('click', () => $('file2').click());
+$('file2').addEventListener('change', (e) => { uploadPortfolio(e.target.files[0]); e.target.value = ''; });
+['dragenter', 'dragover'].forEach((ev) => drop2.addEventListener(ev, (e) => { e.preventDefault(); drop2.classList.add('over'); }));
+['dragleave', 'drop'].forEach((ev) => drop2.addEventListener(ev, (e) => { e.preventDefault(); drop2.classList.remove('over'); }));
+drop2.addEventListener('drop', (e) => uploadPortfolio(e.dataTransfer.files[0]));
+$('del-portfolio').addEventListener('click', async () => {
+  if (!confirm('移除这份简历的作品集文件？')) return;
+  try { applyState(await api('DELETE', `/portfolio?resume=${encodeURIComponent(S.current)}`)); renderAll(); toast('已移除'); }
+  catch (e) { toast(e.message); }
+});
 
 // ---------- AI 接口 ----------
 let llmDraft = [];

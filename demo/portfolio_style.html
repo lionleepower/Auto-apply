@@ -1,0 +1,59 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<title>Demo · 作品集上传 / 字数上限 / 单行输入框（得物、百度，2026-10-09 诊断）</title>
+<style>
+  body { font: 14px/1.6 system-ui, sans-serif; background: #f4f5f7; margin: 0; }
+  .page { max-width: 720px; margin: 24px auto; background: #fff; padding: 24px 32px; border-radius: 8px; }
+  .sec-title { font-size: 18px; font-weight: 600; margin: 22px 0 10px; }
+  .row { margin: 10px 0; }
+  .row > label { display: block; color: #555; margin-bottom: 3px; }
+  input[type=text] { width: 100%; box-sizing: border-box; padding: 5px 8px; border: 1px solid #d9d9d9; border-radius: 4px; font: inherit; }
+  .counter { color: #d4380d; font-size: 12px; min-height: 18px; }
+  .drop { border: 1px dashed #bbb; padding: 10px; border-radius: 6px; }
+</style>
+</head>
+<body>
+<div class="page">
+  <h2>示例科技 2027 校招 · 作品集与开放题</h2>
+
+  <div class="sec-title">简历</div>
+  <div class="row"><div class="drop"><label>拖拽/点击上传您的简历 支持格式：doc、docx、pdf</label><input type="file" data-key="resume"></div></div>
+
+  <div class="sec-title">AI技能运用</div>
+  <div class="row"><label>请描述一个与 AI 协作完成的项目或任务（请说明项目背景、遇到的问题、解决方案以及最终的结果）</label>
+    <input type="text" data-key="ai_story" data-limit="200"><div class="counter" data-for="ai_story"></div></div>
+  <div class="row"><label>请列出你常用的 AI 工具 &amp; 模型</label>
+    <input type="text" data-key="ai_tools" data-limit="200"><div class="counter" data-for="ai_tools"></div></div>
+
+  <div class="sec-title">获奖信息</div>
+  <div class="row"><label>作品链接</label><input type="text" data-key="work_url"></div>
+  <div class="row"><label>作品描述</label><input type="text" data-key="work_desc"></div>
+  <div class="row"><div class="drop"><label>拖拽/点击上传您的作品集 附件不限格式，最大支持50M，超出请附作品链接</label>
+    <input type="file" data-key="portfolio"></div></div>
+
+  <button type="button" id="submit">提交</button>
+</div>
+<script>
+  // 字数计数：超出上限时显示「超出 N 个字符」（得物飞书招聘的做法），值本身不被截断
+  document.querySelectorAll('input[data-limit]').forEach((inp) => {
+    const counter = document.querySelector('.counter[data-for="' + inp.dataset.key + '"]');
+    const update = () => {
+      const over = inp.value.length - Number(inp.dataset.limit);
+      counter.textContent = over > 0 ? '超出 ' + over + ' 个字符' : '';
+    };
+    inp.addEventListener('input', update);
+    inp.addEventListener('change', update);
+  });
+  window.__formValues = () => {
+    const out = {};
+    document.querySelectorAll('input[type=text]').forEach((i) => { out[i.dataset.key] = i.value; });
+    document.querySelectorAll('input[type=file]').forEach((i) => { out[i.dataset.key] = i.files.length ? i.files[0].name : ''; });
+    out.__submitted = !!window.__submitted;
+    return out;
+  };
+  document.getElementById('submit').addEventListener('click', () => { window.__submitted = true; });
+</script>
+</body>
+</html>

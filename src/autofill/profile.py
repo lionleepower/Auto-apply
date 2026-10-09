@@ -34,6 +34,7 @@ class Basic(BaseModel):
     foreign_language: str | None = None  # 外语语种，如「英语」
     github: str | None = None
     homepage: str | None = None
+    portfolio: str | None = None  # 作品集链接；留空时用 GitHub
     # 海外申请（英文表单）
     first_name: str | None = None  # 留空时由 name_en 拆出
     last_name: str | None = None
@@ -104,7 +105,8 @@ class Paper(BaseModel):
     citation: str | None = None  # 完整引用，给「粘贴论文信息」这类框
 
 
-VARIANT_FIELDS = ("education", "experience", "projects", "papers", "skills", "awards", "self_intro", "resume_file")
+VARIANT_FIELDS = ("education", "experience", "projects", "papers", "skills", "awards", "self_intro", "resume_file",
+                  "portfolio_file")
 LOCALES = {"cn": "中文（国内校招）", "overseas": "海外（英文表单）"}
 
 
@@ -122,6 +124,7 @@ class ResumeVariant(BaseModel):
     awards: str | None = None
     self_intro: str | None = None
     resume_file: str | None = None  # 简历附件路径
+    portfolio_file: str | None = None  # 作品集文件（zip / pdf）路径
 
 
 class Profile(BaseModel):
@@ -134,6 +137,7 @@ class Profile(BaseModel):
     awards: str | None = None
     self_intro: str | None = None
     resume_file: str | None = None  # 简历附件路径，--upload-resume 时上传
+    portfolio_file: str | None = None
     # 以上 education … resume_file 是「当前选用那份简历」的展开视图（load_profile 填充），文件里存在 resumes 中
     locale: str = "cn"
     resumes: list[ResumeVariant] = Field(default_factory=list)

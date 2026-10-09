@@ -24,7 +24,7 @@ from . import settings as app_settings
 from .gui import UI_DIR, router as ui_router
 from .llm import build_client
 from .pipeline import (Item, _wanted_section, annotate, apply_result, build_report, next_add_click, page_script,
-                       pick_resume_field, prepare, section_counts)
+                       pick_portfolio_field, pick_resume_field, prepare, section_counts)
 from .profile import load_profile
 
 ROOT = Path(__file__).resolve().parents[2]
@@ -99,7 +99,8 @@ def health():
         "ok": True,
         "name": profile.basic.name,
         "resumes": [{"id": v.id, "name": v.name, "locale": v.locale,
-                     "file": Path(v.resume_file).name if v.resume_file and Path(v.resume_file).exists() else None}
+                     "file": Path(v.resume_file).name if v.resume_file and Path(v.resume_file).exists() else None,
+                     "portfolio": Path(v.portfolio_file).name if v.portfolio_file and Path(v.portfolio_file).exists() else None}
                     for v in doc.resumes],
         "default_resume": profile.active_resume,
         "resume": resume.name if resume and resume.exists() else None,
@@ -162,6 +163,22 @@ def resume(resume: str | None = None):
 @app.post("/api/resume")
 def resume_post(body: ResumeFileIn):
     return _resume_file(body.resume)
+
+
+@app.post("/api/portfolio")
+def portfolio_post(body: ResumeFileIn):
+    profile = load_profile(_profile_path(), body.resume)
+    path = Path(profile.portfolio_file or "")
+    if not profile.portfolio_file or not path.exists():
+        raise HTTPException(404, "这份简历还没有上传作品集（在助手的「我的资料」里上传）")
+    return {"name": path.name, "mime": mimetypes.guess_type(path.name)[0] or "application/octet-stream",
+            "b64": base64.b64encode(path.read_bytes()).decode()}
+
+
+@app.post("/api/portfolio-target")
+def portfolio_target(body: FieldsIn):
+    f = pick_portfolio_field(body.fields)
+    return {"id": f["id"] if f else None}
 
 
 def _resume_file(rid: str | None):

@@ -103,6 +103,22 @@
       }
     }
 
+    if (opts.portfolio && !opts.dryRun) {
+      const target = await env.api('/portfolio-target', { fields: (await extract()).fields });
+      if (!target.id) {
+        uploadNote = [uploadNote, '没找到作品集上传框'].filter(Boolean).join('；');
+      } else {
+        env.progress('上传作品集…');
+        try {
+          const file = await env.api('/portfolio', { resume: opts.resume || null });
+          const ok = (await env.exec(pageSetFile, [target.id, file.b64, file.name, file.mime])) > 0;
+          uploadNote = [uploadNote, ok ? `已上传作品集：${file.name}` : '作品集上传失败'].filter(Boolean).join('；');
+        } catch (e) {
+          uploadNote = [uploadNote, `作品集上传失败：${e.message || e}`].filter(Boolean).join('；');
+        }
+      }
+    }
+
     // 多轮：分区编辑式表单（OPPO）要逐个打开分区；选了「有」之后会冒出新字段
     const sessions = [];
     const results = {};

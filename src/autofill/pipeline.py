@@ -273,6 +273,10 @@ def resolve(it: Item, f: dict, profile: Profile, ctx: dict | None = None) -> Non
     if it.key.startswith("answer:"):
         # 答案可以写多个说法，用「、」分隔：「内部推荐、内推」（OPPO 的选项叫「内部推荐」）
         text = str(profile.answers[it.key[7:]]).strip()
+        variants = [v.strip() for v in re.split(r"\n\s*-{3,}\s*\n", text) if v.strip()]
+        if len(variants) > 1:  # 单独一行 --- 分隔：长版在前，短版在后；站点有字数上限时页面脚本会换用放得下的那版
+            it.candidates, it.note = variants, "资料里的固定答案（有长短两个版本）"
+            return
         # 长文本 / 带标点的整句是一份完整回答（开放题），不能拆；短词才按「、」拆成多个说法
         long_text = len(text) > 24 or "\n" in text or bool(re.search(r"[，。；：,;:]", text))
         answers = [text] if long_text else [a for a in re.split(r"[、/]", text) if a]
@@ -294,6 +298,20 @@ def resolve(it: Item, f: dict, profile: Profile, ctx: dict | None = None) -> Non
             it.note = "资料里起止时间不全"
         return
     it.profile_index = idx
+    if it.key == "basic.portfolio":
+        link = profile.basic.portfolio or profile.basic.github or profile.basic.homepage
+        if not link:
+            it.note = "资料里没有作品集链接（可填 GitHub）"
+        else:
+            it.candidates = [link]
+        return
+    if it.key == "portfolio.desc":
+        repos = [f"{p.name}（{p.url}）" for p in profile.projects if p.url]
+        if repos:
+            it.candidates = ["代表作品（GitHub 公开仓库）：" + "；".join(repos)]
+        else:
+            it.note = "资料里的项目没有链接，写不出作品说明"
+        return
     if it.key == "education.gpa_scale":
         it.candidates = candidates_for(it.key, profile.get("education.gpa", idx), it.kind, ph)
         if not profile.get("education.gpa", idx):
@@ -395,6 +413,28 @@ def pick_resume_field(fields: list[dict]) -> dict | None:
     return None
 
 
+def pick_portfolio_field(fields: list[dict]) -> dict | None:
+    """「作品集」上传框（不碰简历 / 其他附件 / 证明材料框）。"""
+    for f in fields:
+        text = f"{f['label']} {f['section']}"
+        if f["kind"] == "file" and re.search(r"作品集?|portfolio", text, re.I) and "简历" not in text \
+                and not re.search(r"其他附件|证明|论文", text):
+            return f
+    return None
+
+
+def upload_portfolio(page: Page, fields: list[dict], path: str | Path) -> str:
+    path = Path(path)
+    if not path.exists():
+        return f"作品集文件不存在：{path}"
+    f = pick_portfolio_field(fields)
+    if not f:
+        return "没找到作品集上传框"
+    page.set_input_files(f'[data-af-id="{f["id"]}"]', str(path))
+    page.wait_for_timeout(1500)
+    return f"已上传作品集：{path.name}"
+
+
 def upload_resume(page: Page, fields: list[dict], path: str | Path) -> str:
     """把简历传进简历上传框。上传会触发站点的简历解析，所以要在填写之前做。"""
     path = Path(path)
@@ -456,6 +496,8 @@ def apply_result(it: Item, res: dict) -> None:
             it.note = f"已把页面上的「{it.replacing[:20]}」改为资料值"
         if res.get("note"):
             it.note = "；".join(x for x in (it.note, res["note"]) if x)
+        if res.get("truncated"):
+            it.status = "uncertain"
         if res.get("unverified"):
             it.status = "uncertain"
             it.note = "；".join(x for x in (it.note, f"点了「{it.chosen}」，但控件上没看到选中的值，请确认") if x)
@@ -541,6 +583,9 @@ def run(page: Page, profile: Profile, llm: ChatClient | None = None, overwrite: 
     if upload and not dry_run and profile.resume_file:
         upload_note = upload_resume(page, extract(page)["fields"], profile.resume_file)
     resume_uploaded = (upload_note or "").startswith("已上传")
+    if upload and not dry_run and profile.portfolio_file:
+        pnote = upload_portfolio(page, extract(page)["fields"], profile.portfolio_file)
+        upload_note = "；".join(x for x in (upload_note, pnote) if x)
     merged: dict[str, Item] = {}
     llm_error = None
     sections: list[dict] = []

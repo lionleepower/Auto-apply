@@ -210,3 +210,56 @@ def test_long_fixed_answer_is_not_split_into_alternatives(profile):
     short.key = "answer:亲属"
     resolve(short, {"placeholder": "", "label": short.label, "kind": "radio", "id": "f2"}, profile, {})
     assert short.candidates[:3] == ["否", "没有", "无"]
+
+
+# ---------- 作品集 ----------
+
+def _zip_bytes(files: dict[str, str]) -> bytes:
+    import io
+    import zipfile
+
+    buf = io.BytesIO()
+    with zipfile.ZipFile(buf, "w") as z:
+        for name, text in files.items():
+            z.writestr(name, text)
+    return buf.getvalue()
+
+
+def test_portfolio_upload_is_per_resume_and_imports_readme(client, tmp_path):
+    z = _zip_bytes({"proj/README.md": "# Agent 项目\n工具调用 Agent 与离线评测", "proj/src/main.py": "print(1)",
+                    "../evil/README.md": "不该被读"})
+    rid = _create(client, name="B")["current"]
+    r = client.post("/api/ui/portfolio", headers=UI, json={"name": "我的作品集.zip", "resume": rid,
+                                                            "b64": base64.b64encode(z).decode()})
+    assert r.status_code == 200
+    body = r.json()
+    assert "工具调用 Agent" in body["text"] and "print(1)" not in body["text"] and "不该被读" not in body["text"]
+    st = client.get(f"/api/ui/state?resume={rid}", headers=UI).json()
+    assert st["portfolio"] == "我的作品集.zip"
+    assert client.get("/api/ui/state", headers=UI).json()["portfolio"] is None  # 别的简历没有
+    assert (tmp_path / "resume" / rid / "portfolio" / "我的作品集.zip").exists()
+    h = client.get("/api/health", headers=UI).json()
+    assert {x["id"]: x["portfolio"] for x in h["resumes"]}[rid] == "我的作品集.zip"
+    # 插件取文件
+    f = client.post("/api/portfolio", json={"resume": rid}, headers=UI).json()
+    assert f["name"] == "我的作品集.zip" and base64.b64decode(f["b64"]) == z
+    assert client.post("/api/portfolio", json={"resume": "default"}, headers=UI).status_code == 404
+    # 移除
+    st = client.delete(f"/api/ui/portfolio?resume={rid}", headers=UI).json()
+    assert st["portfolio"] is None and not (tmp_path / "resume" / rid / "portfolio").exists()
+
+
+def test_portfolio_rejects_bad_files(client):
+    ok = base64.b64encode(b"x").decode()
+    assert client.post("/api/ui/portfolio", json={"name": "a.exe", "b64": ok}, headers=UI).status_code == 400
+    assert client.post("/api/ui/portfolio", json={"name": "a.zip", "b64": ok}, headers=UI).status_code == 400  # 不是 zip
+    big = base64.b64encode(b"0" * (30 * 1024 * 1024 + 1)).decode()
+    assert client.post("/api/ui/portfolio", json={"name": "a.pdf", "b64": big}, headers=UI).status_code == 413
+
+
+def test_zip_with_huge_or_binary_entries_is_safe():
+    from autofill import knowledge
+
+    z = _zip_bytes({"README.md": "x" * 300_000, "docs/NOTES.txt": "有用的说明", "a.png": "bin"})
+    text = knowledge.extract_zip_text(z)
+    assert "有用的说明" in text and "x" * 1000 not in text  # 超过 200KB 的单个文件跳过

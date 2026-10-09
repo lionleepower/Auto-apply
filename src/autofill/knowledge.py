@@ -59,6 +59,48 @@ def extract_text(filename: str, data: bytes) -> str:
     return text[:MAX_CHARS]
 
 
+PORTFOLIO_EXTS = (".zip", ".pdf", ".rar", ".7z")
+TEXT_NAMES = re.compile(r"(^|/)(readme[^/]*|[^/]+\.(md|txt|rst))$", re.I)
+
+
+def extract_zip_text(data: bytes, max_chars: int = 12000) -> str:
+    """作品集 zip 里的 README / 文档文字（不解压到磁盘，只读文本类小文件，防压缩炸弹）。读不出来返回空串。"""
+    import zipfile
+
+    try:
+        zf = zipfile.ZipFile(io.BytesIO(data))
+    except zipfile.BadZipFile as e:
+        raise ValueError("这不是有效的 zip 文件") from e
+    out, total = [], 0
+    infos = sorted((i for i in zf.infolist() if not i.is_dir() and TEXT_NAMES.search(i.filename)
+                    and ".." not in i.filename and not i.filename.startswith("/")),
+                   key=lambda i: (i.filename.count("/"), i.filename))  # 越靠近根目录越先读
+    for info in infos[:12]:
+        if info.file_size > 200_000:
+            continue
+        try:
+            raw = zf.read(info)
+        except Exception:  # 加密或损坏的条目：跳过
+            continue
+        for enc in ("utf-8-sig", "gbk"):
+            try:
+                text = raw.decode(enc)
+                break
+            except UnicodeDecodeError:
+                continue
+        else:
+            continue
+        text = re.sub(r"\n{3,}", "\n\n", text).strip()
+        if not text:
+            continue
+        chunk = f"—— 作品集文件 {info.filename} ——\n{text}"
+        out.append(chunk[: max_chars - total])
+        total += len(out[-1])
+        if total >= max_chars:
+            break
+    return "\n\n".join(out)
+
+
 ID_RE = re.compile(r"(?<!\d)\d{17}[\dXx](?!\d)")
 
 

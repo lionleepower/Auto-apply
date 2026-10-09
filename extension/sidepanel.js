@@ -107,6 +107,9 @@ async function checkServer() {
     const file = cur ? cur.file : h.resume;
     $('resume-name').textContent = file ? `（${file}）` : '（这份简历还没上传文件）';
     $('opt-upload').disabled = !file;
+    const pf = cur ? cur.portfolio : null;
+    $('row-portfolio').hidden = !pf;
+    $('portfolio-name').textContent = pf ? `（${pf}）` : '';
     $('opt-llm').disabled = !h.llm.length;
     $('llm-name').textContent = h.llm_label || 'LLM（还没配置 AI 接口）';
     $('opt-llm').dataset.provider = h.llm.length ? 'auto' : 'none';
@@ -177,7 +180,7 @@ function showTab() {
   setButtons();
 }
 
-const OPTS = ['opt-upload', 'opt-overwrite', 'opt-llm', 'opt-save'];
+const OPTS = ['opt-upload', 'opt-portfolio', 'opt-overwrite', 'opt-llm', 'opt-save'];
 async function loadOptions() {
   const saved = await chrome.storage.local.get(OPTS);
   OPTS.forEach((k) => { if (k in saved) $(k).checked = saved[k]; });
@@ -240,6 +243,7 @@ async function start(dryRun) {
       llm: $('opt-llm').checked && !$('opt-llm').disabled ? $('opt-llm').dataset.provider : 'none',
       referral: $('referral').value.trim(),
       resume: $('resume-pick').value || null,
+      portfolio: !$('row-portfolio').hidden && $('opt-portfolio').checked,
       save: $('opt-save').checked,
       shouldStop: () => job.stop,
     });
