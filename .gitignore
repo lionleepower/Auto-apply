@@ -1,0 +1,19 @@
+.venv/
+__pycache__/
+*.pyc
+.pytest_cache/
+# 个人信息与运行产物：一律不提交
+profile.yaml
+.env
+.browser-data*/
+runs/
+.python/
+settings.json
+.gui-data/
+resume/
+profile.yaml.bak
+profile_notes.txt
+
+# 实测脚本：真实站点列表（含内推码）、插件测试副本
+tools/live/sites.json
+.live-ext/

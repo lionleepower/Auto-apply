@@ -1,0 +1,112 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<title>Demo · 飞书招聘 ud 组件结构复刻（得物，2026-10-09 诊断）</title>
+<style>
+  body { font: 14px/1.6 system-ui, sans-serif; background: #f4f5f7; margin: 0; }
+  .page { max-width: 720px; margin: 24px auto; background: #fff; padding: 24px 32px; border-radius: 8px; }
+  .sec-title { font-size: 18px; font-weight: 600; margin: 22px 0 10px; }
+  .row { display: flex; margin: 10px 0; align-items: center; }
+  .row > label { width: 120px; flex: none; }
+  .row .ctl { flex: 1; }
+  .ud__native-input, .ud__input input { width: 100%; box-sizing: border-box; padding: 5px 8px; border: 1px solid #d9d9d9; border-radius: 4px; font: inherit; }
+  .ud__select { position: relative; }
+  .ud__select__selector { border: 1px solid #d9d9d9; border-radius: 4px; padding: 4px 8px; min-height: 24px; cursor: pointer; position: relative; }
+  .ud__select__selector__item { position: absolute; left: 8px; top: 4px; pointer-events: none; }
+  .ud__select__selector__search__input { border: 0; outline: 0; background: transparent; cursor: pointer; }
+  .ud__select__dropdown { position: absolute; z-index: 10; background: #fff; border: 1px solid #ddd; box-shadow: 0 6px 16px rgba(0,0,0,.12); min-width: 200px; }
+  .ud__select__list__item { padding: 5px 12px; cursor: pointer; }
+  .ud__select__list__item:hover { background: #eef3ff; }
+  .pair { display: flex; gap: 8px; }
+</style>
+</head>
+<body>
+<div class="page">
+  <h2>示例科技 2027 校招（飞书招聘 · ud 组件）</h2>
+
+  <div class="sec-title">基本信息</div>
+  <div class="row"><label>姓名</label><div class="ctl ud__input"><input class="ud__native-input" data-key="name"></div></div>
+  <div class="row"><label>性别</label><div class="ctl">
+    <div class="ud__select" data-key="gender" data-options="男|女|保密">
+      <div class="ud__select__selector"><div class="ud__select__selector__content"><div class="ud__select__selector__placeholder"></div>
+        <div class="ud__select__selector__search"><input class="ud__select__selector__search__input ud__native-input" role="combobox" autocomplete="off" type="search" readonly value=""></div></div></div>
+    </div></div></div>
+
+  <div class="sec-title">教育经历</div>
+  <div class="row"><label>学校名称</label><div class="ctl ud__input"><input class="ud__native-input" data-key="school"></div></div>
+  <div class="row"><label>学历</label><div class="ctl">
+    <div class="ud__select" data-key="degree" data-options="博士|MBA|硕士|本科|大专|高中">
+      <div class="ud__select__selector"><div class="ud__select__selector__content"><div class="ud__select__selector__placeholder"></div>
+        <div class="ud__select__selector__search"><input class="ud__select__selector__search__input ud__native-input" role="combobox" autocomplete="off" type="search" readonly value=""></div></div></div>
+    </div></div></div>
+  <div class="row"><label>专业</label><div class="ctl ud__input"><input class="ud__native-input" data-key="major"></div></div>
+  <!-- 日期范围框：没有标签，也没有占位文字 -->
+  <div class="row"><label></label><div class="ctl pair">
+    <div class="throne-biz-date-range-picker-input ud__input"><input class="ud__native-input" data-key="edu_start"></div>
+    <div class="throne-biz-date-range-picker-input ud__input"><input class="ud__native-input" data-key="edu_end"></div></div></div>
+
+  <div class="sec-title">AI技能运用</div>
+  <div class="row"><label style="width:auto;flex:1">请列出你常用的 AI 工具 &amp; 模型（编码工具：Cursor、GitHub Copilot...... 大模型：GPT-4o）</label></div>
+  <div class="row"><div class="ctl ud__input"><input class="ud__native-input" data-key="ai_tools"></div></div>
+
+  <button type="button" id="submit">提交</button>
+</div>
+<script>
+  // 下拉层只创建一次，之后反复显示 / 隐藏（和真实站点一致）；选项类名是 BEM 的 ud__select__list__item
+  let dd = null;
+  let owner = null;
+  const values = {};
+  function ensureDropdown() {
+    if (dd) return dd;
+    dd = document.createElement('div');
+    dd.style.cssText = 'position:absolute;top:0;left:0;width:100%';
+    dd.innerHTML = '<div class="ud__select__dropdown"><div class="ud__select__list"><div class="ud__select__list__menu"><div class="rc-virtual-list"><div class="rc-virtual-list-holder"><div class="rc-virtual-list-holder-inner"></div></div></div></div></div></div>';
+    document.body.appendChild(dd);
+    return dd;
+  }
+  function close() { if (dd) dd.style.display = 'none'; owner = null; }
+  document.querySelectorAll('.ud__select').forEach((sel) => {
+    sel.addEventListener('click', (e) => {
+      e.stopPropagation();
+      if (owner === sel) return close();
+      const d = ensureDropdown();
+      const inner = d.querySelector('.rc-virtual-list-holder-inner');
+      inner.innerHTML = '';
+      sel.dataset.options.split('|').forEach((t) => {
+        const item = document.createElement('div');
+        item.innerHTML = '<div class="ud__select__list__item"><div><span><span></span></span></div><div class="ud__select__list__item__check"></div></div>';
+        item.querySelector('span span').textContent = t;
+        item.querySelector('.ud__select__list__item').addEventListener('click', (ev) => {
+          ev.stopPropagation();
+          values[sel.dataset.key] = t;
+          sel.querySelector('.ud__select__selector').insertAdjacentHTML('beforeend', '');
+          let shown = sel.querySelector('.ud__select__selector__item');
+          if (!shown) {
+            shown = document.createElement('span');
+            shown.className = 'ud__select__selector__item';
+            sel.querySelector('.ud__select__selector').appendChild(shown);
+          }
+          shown.textContent = t;
+          close();
+        });
+        inner.appendChild(item);
+      });
+      const r = sel.getBoundingClientRect();
+      d.firstChild.style.top = (window.scrollY + r.bottom) + 'px';
+      d.firstChild.style.left = (window.scrollX + r.left) + 'px';
+      d.style.display = '';
+      owner = sel;
+    });
+  });
+  document.addEventListener('click', close);
+  window.__formValues = () => {
+    const out = { ...values };
+    document.querySelectorAll('input[data-key]').forEach((i) => { out[i.dataset.key] = i.value; });
+    out.__submitted = !!window.__submitted;
+    return out;
+  };
+  document.getElementById('submit').addEventListener('click', () => { window.__submitted = true; });
+</script>
+</body>
+</html>

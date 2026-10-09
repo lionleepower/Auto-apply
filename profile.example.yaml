@@ -1,0 +1,62 @@
+# 示例资料（虚构人物），测试只用这份，不依赖真实个人信息。
+basic:
+  name: 张三
+  name_en: San Zhang
+  gender: 男
+  birth_date: "2000-05-01"
+  phone: "13800000000"
+  email: zhangsan@example.com
+  id_number: "000000000000000000"
+  political_status: 共青团员
+  hometown: 江苏苏州
+  current_city: 上海
+  expected_city: 上海，杭州
+  accept_adjustment: true
+  available: 随时到岗
+  english: 雅思 7.0
+  github: github.com/zhangsan-demo
+
+education:
+  - school: 示例大学
+    college: 信息学院
+    major: 高性能计算与数据科学
+    degree: 硕士
+    is_overseas: true
+    city: 上海
+    start: "2025-09"
+    end: "2026-12"
+    gpa: "3.8/4.0"
+  - school: 示例理工大学
+    college: 计算机学院
+    major: 计算机科学
+    degree: 本科
+    is_overseas: false
+    city: 苏州
+    start: "2021-09"
+    end: "2025-06"
+    gpa: "3.6/4.0"
+
+experience:
+  - kind: 实习
+    company: 示例科技
+    title: 前端开发实习生
+    start: "2023-08"
+    end: "2023-09"
+    description: 用 Vue 开发天气组件。
+
+projects:
+  - name: 示例 Agent 项目
+    role: 独立开发
+    description: 工具调用 Agent 与离线评测。
+  - name: 示例性能评测
+    role: 负责人
+    description: 4,096 核扩展性实验。
+
+papers:
+  - title: 示例论文
+    venue: 示例会议 2024
+    year: "2024"
+    author_order: 独立作者
+    citation: "Zhang, San. 示例论文. 示例会议 2024."
+
+self_intro: 做事细致，重视数据可信度。

@@ -1,0 +1,15 @@
+{
+  "manifest_version": 3,
+  "name": "网申自动填写",
+  "version": "0.1.0",
+  "description": "在当前网申页上按本地资料自动填写，只填不交。需要先启动本地服务。",
+  "permissions": ["scripting", "sidePanel", "tabs", "storage", "debugger"],
+  "host_permissions": ["<all_urls>", "http://127.0.0.1:8765/*"],
+  "background": { "service_worker": "background.js" },
+  "side_panel": { "default_path": "sidepanel.html" },
+  "action": {
+    "default_title": "打开网申自动填写",
+    "default_icon": { "16": "icons/icon16.png", "48": "icons/icon48.png", "128": "icons/icon128.png" }
+  },
+  "icons": { "16": "icons/icon16.png", "48": "icons/icon48.png", "128": "icons/icon128.png" }
+}

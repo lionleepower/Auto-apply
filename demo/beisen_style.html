@@ -1,0 +1,148 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<title>Demo · 北森风格网申表单</title>
+<style>
+  body { font: 14px/1.6 "Microsoft YaHei", sans-serif; background: #eef1f5; margin: 0; }
+  .wrap { max-width: 820px; margin: 20px auto; background: #fff; padding: 20px 28px; }
+  .phoenix-section__title { font-size: 16px; font-weight: bold; color: #1f2d3d; border-bottom: 1px solid #e5e9f0; padding: 8px 0; margin-top: 22px; }
+  .phoenix-formItem { display: grid; grid-template-columns: 150px 1fr; gap: 8px; margin: 10px 0; }
+  .phoenix-formItem__label .required { color: #e33; margin-right: 2px; }
+  .phoenix-input, .phoenix-textarea, select { width: 100%; box-sizing: border-box; padding: 6px; border: 1px solid #c8d0dc; font: inherit; }
+  .phoenix-select { position: relative; border: 1px solid #c8d0dc; padding: 6px; cursor: pointer; }
+  .phoenix-select__value.empty { color: #999; }
+  .phoenix-select__dropdown { position: absolute; left: 0; right: 0; top: 100%; background: #fff; border: 1px solid #c8d0dc; list-style: none; margin: 0; padding: 0; z-index: 9; display: none; }
+  .phoenix-select.open .phoenix-select__dropdown { display: block; }
+  .phoenix-select__dropdown li { padding: 4px 8px; }
+  .phoenix-select__dropdown li:hover { background: #eef4ff; }
+  .edu-card { background: #fafbfc; padding: 6px 12px; margin: 8px 0; }
+  .link-add { color: #0a6cff; cursor: pointer; }
+  .btn-submit { background: #0a6cff; color: #fff; border: 0; padding: 8px 30px; margin-top: 20px; }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div class="phoenix-section__title">个人信息</div>
+  <div class="phoenix-formItem"><div class="phoenix-formItem__label"><span class="required">*</span>姓名</div>
+    <div class="phoenix-formItem__content"><input class="phoenix-input" data-key="name"></div></div>
+  <div class="phoenix-formItem"><div class="phoenix-formItem__label">英文姓名</div>
+    <div class="phoenix-formItem__content"><input class="phoenix-input" data-key="name_en"></div></div>
+  <div class="phoenix-formItem"><div class="phoenix-formItem__label"><span class="required">*</span>性别</div>
+    <div class="phoenix-formItem__content"><span class="phoenix-radio-group" data-key="gender">
+      <label class="phoenix-radio"><input type="radio" name="gender" value="M"><span>男</span></label>
+      <label class="phoenix-radio"><input type="radio" name="gender" value="F"><span>女</span></label></span></div></div>
+  <div class="phoenix-formItem"><div class="phoenix-formItem__label"><span class="required">*</span>手机</div>
+    <div class="phoenix-formItem__content"><input class="phoenix-input" data-key="phone"></div></div>
+  <div class="phoenix-formItem"><div class="phoenix-formItem__label"><span class="required">*</span>电子邮件</div>
+    <div class="phoenix-formItem__content"><input class="phoenix-input" data-key="email"></div></div>
+  <div class="phoenix-formItem"><div class="phoenix-formItem__label">证件类型</div>
+    <div class="phoenix-formItem__content"><select data-key="id_type"><option value="">请选择</option><option value="1">居民身份证</option><option value="2">护照</option></select></div></div>
+  <div class="phoenix-formItem"><div class="phoenix-formItem__label">证件号码</div>
+    <div class="phoenix-formItem__content"><input class="phoenix-input" data-key="id_number"></div></div>
+  <div class="phoenix-formItem"><div class="phoenix-formItem__label">政治面貌</div>
+    <div class="phoenix-formItem__content"><select data-key="political"><option value="">请选择</option><option value="a">中共党员</option><option value="b">共青团员</option><option value="c">群众</option></select></div></div>
+  <div class="phoenix-formItem"><div class="phoenix-formItem__label">籍贯</div>
+    <div class="phoenix-formItem__content"><input class="phoenix-input" data-key="hometown"></div></div>
+  <div class="phoenix-formItem"><div class="phoenix-formItem__label">紧急联系人电话</div>
+    <div class="phoenix-formItem__content"><input class="phoenix-input" data-key="emergency"></div></div>
+
+  <div class="phoenix-section__title">求职意向</div>
+  <div class="phoenix-formItem"><div class="phoenix-formItem__label"><span class="required">*</span>期望工作城市</div>
+    <div class="phoenix-formItem__content">
+      <div class="phoenix-select" data-key="exp_city"><span class="phoenix-select__value empty">请选择</span>
+        <ul class="phoenix-select__dropdown"><li role="option">北京</li><li role="option">上海</li><li role="option">杭州</li><li role="option">深圳</li></ul></div></div></div>
+
+  <div class="phoenix-section__title">教育背景</div>
+  <div id="edu">
+    <div class="edu-card">
+      <div class="phoenix-formItem"><div class="phoenix-formItem__label"><span class="required">*</span>毕业院校</div>
+        <div class="phoenix-formItem__content"><input class="phoenix-input" data-f="school"></div></div>
+      <div class="phoenix-formItem"><div class="phoenix-formItem__label">所在院系</div>
+        <div class="phoenix-formItem__content"><input class="phoenix-input" data-f="college"></div></div>
+      <div class="phoenix-formItem"><div class="phoenix-formItem__label"><span class="required">*</span>专业名称</div>
+        <div class="phoenix-formItem__content"><input class="phoenix-input" data-f="major"></div></div>
+      <div class="phoenix-formItem"><div class="phoenix-formItem__label"><span class="required">*</span>学历</div>
+        <div class="phoenix-formItem__content"><select data-f="degree"><option value="">请选择</option><option value="1">本科</option><option value="2">硕士</option><option value="3">博士</option></select></div></div>
+      <div class="phoenix-formItem"><div class="phoenix-formItem__label"><span class="required">*</span>入学时间</div>
+        <div class="phoenix-formItem__content"><input class="phoenix-input" data-f="start" placeholder="如：2021-09"></div></div>
+      <div class="phoenix-formItem"><div class="phoenix-formItem__label"><span class="required">*</span>毕业时间</div>
+        <div class="phoenix-formItem__content"><input class="phoenix-input" data-f="end" placeholder="如：2025-06"></div></div>
+      <div class="phoenix-formItem"><div class="phoenix-formItem__label">GPA</div>
+        <div class="phoenix-formItem__content"><input class="phoenix-input" data-f="gpa"></div></div>
+    </div>
+  </div>
+  <span class="link-add" id="add-edu">+ 新增</span>
+
+  <div class="phoenix-section__title">工作/实习经历</div>
+  <div id="work">
+    <div class="edu-card">
+      <div class="phoenix-formItem"><div class="phoenix-formItem__label">单位名称</div>
+        <div class="phoenix-formItem__content"><input class="phoenix-input" data-f="company"></div></div>
+      <div class="phoenix-formItem"><div class="phoenix-formItem__label">岗位</div>
+        <div class="phoenix-formItem__content"><input class="phoenix-input" data-f="title"></div></div>
+      <div class="phoenix-formItem"><div class="phoenix-formItem__label">开始日期</div>
+        <div class="phoenix-formItem__content"><input class="phoenix-input" data-f="start" placeholder="yyyy/mm"></div></div>
+      <div class="phoenix-formItem"><div class="phoenix-formItem__label">结束日期</div>
+        <div class="phoenix-formItem__content"><input class="phoenix-input" data-f="end" placeholder="yyyy/mm"></div></div>
+      <div class="phoenix-formItem"><div class="phoenix-formItem__label">工作描述</div>
+        <div class="phoenix-formItem__content"><textarea class="phoenix-textarea" data-f="desc"></textarea></div></div>
+    </div>
+  </div>
+  <span class="link-add" id="add-work">+ 新增</span>
+
+  <div class="phoenix-section__title">附加问题</div>
+  <div class="phoenix-formItem"><div class="phoenix-formItem__label">你为什么选择我们公司？</div>
+    <div class="phoenix-formItem__content"><textarea class="phoenix-textarea" data-key="why_us"></textarea></div></div>
+
+  <button class="btn-submit" id="submit" type="button">确认投递</button>
+</div>
+<script>
+  window.__submitted = false;
+  document.getElementById('submit').addEventListener('click', () => { window.__submitted = true; });
+
+  // 北森风格自定义下拉：click 打开，选项 role=option
+  document.addEventListener('click', (e) => {
+    const li = e.target.closest('.phoenix-select__dropdown li');
+    const sel = e.target.closest('.phoenix-select');
+    document.querySelectorAll('.phoenix-select.open').forEach((s) => { if (s !== sel) s.classList.remove('open'); });
+    if (li && sel) {
+      sel.dataset.value = li.textContent;
+      const v = sel.querySelector('.phoenix-select__value');
+      v.textContent = li.textContent; v.classList.remove('empty');
+      sel.classList.remove('open');
+    } else if (sel) sel.classList.toggle('open');
+  });
+
+  let n = 1;
+  function addCard(id) {
+    const list = document.getElementById(id);
+    const c = list.firstElementChild.cloneNode(true);
+    c.querySelectorAll('input, textarea').forEach((el) => { el.value = ''; });
+    c.querySelectorAll('select').forEach((el) => { el.selectedIndex = 0; });
+    list.appendChild(c);
+    n++;
+  }
+  document.getElementById('add-edu').addEventListener('click', () => addCard('edu'));
+  document.getElementById('add-work').addEventListener('click', () => addCard('work'));
+
+  function val(el) {
+    if (el.tagName === 'SELECT') return el.selectedIndex > 0 ? el.options[el.selectedIndex].text : '';
+    if (el.classList.contains('phoenix-select')) return el.dataset.value || '';
+    if (el.classList.contains('phoenix-radio-group')) { const c = el.querySelector('input:checked'); return c ? c.parentElement.textContent.trim() : ''; }
+    return el.value;
+  }
+  window.__formValues = () => {
+    const out = {};
+    document.querySelectorAll('[data-key]').forEach((el) => { out[el.dataset.key] = val(el); });
+    [['edu', 'edu'], ['work', 'work']].forEach(([id, p]) => {
+      [...document.getElementById(id).children].forEach((b, i) => {
+        b.querySelectorAll('[data-f]').forEach((el) => { out[`${p}.${i}.${el.dataset.f}`] = val(el); });
+      });
+    });
+    out.__submitted = window.__submitted;
+    return out;
+  };
+</script>
+</body>
+</html>

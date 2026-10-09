@@ -1,0 +1,68 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<title>Demo · 北森 phoenix + OPPO Element Plus 复刻</title>
+<style>
+  body { font: 14px/1.6 system-ui, sans-serif; margin: 0; background: #f5f6f8; }
+  .page { max-width: 820px; margin: 20px auto; background: #fff; padding: 20px 28px; }
+  nav { display: flex; gap: 16px; padding: 8px 0; border-bottom: 1px solid #eee; }
+  h3.section-title { margin: 22px 0 8px; }
+  .phoenix-formItem, .el-form-item { display: grid; grid-template-columns: 130px 1fr; gap: 8px; margin: 10px 0; align-items: center; }
+  .phoenix-select, .el-select, .el-date-editor { display: inline-flex; align-items: center; gap: 6px; min-width: 200px;
+    border: 1px solid #ccd; border-radius: 4px; padding: 4px 8px; cursor: pointer; }
+  .phoenix-select ul { list-style: none; margin: 0; padding: 0; }
+  .phoenix-select input, .el-date-editor input { border: 0; outline: 0; width: 60px; }
+  .phoenix-select__placeHolder--show, .el-select__placeholder.is-transparent { color: #aaa; }
+  .el-form-item__content { display: flex; gap: 8px; align-items: center; }
+  .el-input { border: 1px solid #ccd; border-radius: 4px; padding: 4px 8px; }
+  .phoenix-selectList__listItem, .el-select-dropdown__item, .area-item-container { list-style: none; padding: 3px 8px; cursor: pointer; }
+  .el-month-table td { padding: 4px 8px; cursor: pointer; }
+</style>
+</head>
+<body>
+<div class="page">
+  <!-- 页面顶部的导航：以前下拉没打开时，工具会把这些当成选项 -->
+  <nav><span class="menu-item">首页</span><span class="menu-item">社会招聘</span><span class="menu-item">校园招聘</span><span class="menu-item">硕士</span></nav>
+
+  <h3 class="section-title">个人信息</h3>
+  <div class="phoenix-formItem"><div class="phoenix-formItem__label">出生日期</div><div class="phoenix-formItem__content">
+    <div class="phoenix-select phoenix-select--editable" data-date="date" data-key="birth"><div class="phoenix-select__placeHolder phoenix-select__placeHolder--show">请选择</div>
+      <ul class="phoenix-select__content"><li class="phoenix-select__inputWrapper"><input class="phoenix-select__input"></li></ul><div class="phoenix-select__switchArrow">▾</div></div></div></div>
+  <div class="phoenix-formItem"><div class="phoenix-formItem__label">籍贯</div><div class="phoenix-formItem__content">
+    <div class="phoenix-select phoenix-select--editable" data-area data-key="hometown"><div class="phoenix-select__placeHolder phoenix-select__placeHolder--show">请选择</div>
+      <ul class="phoenix-select__content"><li class="phoenix-select__inputWrapper"><input class="phoenix-select__input"></li></ul><div class="phoenix-select__switchArrow">▾</div></div></div></div>
+  <div class="phoenix-formItem"><div class="phoenix-formItem__label">意向工作地点</div><div class="phoenix-formItem__content">
+    <div class="phoenix-select phoenix-select--editable" data-key="city" data-options="安徽省/合肥市,广东省/广州市,北京市,天津市,重庆市,湖北省/武汉市,四川省/成都市,陕西省/西安市,江苏省/南京市,浙江省/杭州市,上海市,广东省/深圳市">
+      <div class="phoenix-select__placeHolder phoenix-select__placeHolder--show">请选择</div>
+      <ul class="phoenix-select__content"><li class="phoenix-select__inputWrapper"><input class="phoenix-select__input"></li></ul><div class="phoenix-select__switchArrow">▾</div></div></div></div>
+
+  <h3 class="section-title">教育经历</h3>
+  <div class="el-form-item"><label class="el-form-item__label">起止时间</label><div class="el-form-item__content">
+    <div class="el-input el-date-editor el-date-editor--month" role="combobox" aria-controls="ep-pop-1" data-key="edu_start">
+      <div class="el-input__wrapper"><input class="el-input__inner" readonly placeholder="请选择"></div></div>
+    <span>-</span>
+    <div class="el-input el-date-editor el-date-editor--month" role="combobox" aria-controls="ep-pop-2" data-key="edu_end">
+      <div class="el-input__wrapper"><input class="el-input__inner" readonly placeholder="请选择"></div></div>
+  </div></div>
+  <div class="el-form-item"><label class="el-form-item__label">学历</label><div class="el-form-item__content">
+    <div class="el-select" data-key="degree" data-options="本科,硕士研究生,博士研究生"><div class="el-select__wrapper">
+      <div class="el-select__selection"><div class="el-select__placeholder is-transparent">请选择</div></div><div class="el-select__suffix">▾</div></div></div></div></div>
+  <div class="el-form-item"><label class="el-form-item__label">学校名称</label><div class="el-form-item__content">
+    <input class="el-input" data-key="school" placeholder="请填写"></div></div>
+
+  <h3 class="section-title">实习经历</h3>
+  <div class="phoenix-formItem"><div class="phoenix-formItem__label">开始时间</div><div class="phoenix-formItem__content">
+    <div class="phoenix-select phoenix-select--editable" data-date="month" data-key="work_start"><div class="phoenix-select__placeHolder phoenix-select__placeHolder--show">请选择</div>
+      <ul class="phoenix-select__content"><li class="phoenix-select__inputWrapper"><input class="phoenix-select__input"></li></ul></div></div></div>
+  <div class="phoenix-formItem"><div class="phoenix-formItem__label">结束时间</div><div class="phoenix-formItem__content">
+    <div class="phoenix-select phoenix-select--editable" data-date="month" data-key="work_end"><div class="phoenix-select__placeHolder phoenix-select__placeHolder--show">请选择</div>
+      <ul class="phoenix-select__content"><li class="phoenix-select__inputWrapper"><input class="phoenix-select__input"></li></ul></div></div></div>
+  <div class="phoenix-formItem"><div class="phoenix-formItem__label">单位名称</div><div class="phoenix-formItem__content">
+    <input class="el-input" data-key="company"></div></div>
+
+  <button type="button" data-submit>提交</button>
+</div>
+<script src="real-widgets.js"></script>
+</body>
+</html>

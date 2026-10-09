@@ -1,0 +1,145 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>网申自动填写助手</title>
+<link rel="stylesheet" href="app.css">
+</head>
+<body>
+<div class="shell">
+  <nav class="side">
+    <div class="brand"><span class="logo">✓</span> 网申助手</div>
+    <button class="nav" data-tab="start">上手向导</button>
+    <button class="nav" data-tab="kb">我的资料 <span id="nav-badge" class="badge" hidden></span></button>
+    <button class="nav" data-tab="ai">AI 接口</button>
+    <div class="side-foot">只填不交 · 数据只存本机</div>
+  </nav>
+
+  <main>
+    <!-- 上手向导 -->
+    <section id="tab-start" class="tab">
+      <h1>三步开始</h1>
+      <p class="lead">先把你的资料交给助手，再装上浏览器插件，之后在任何网申页点一下「填写本页」。</p>
+      <ol class="steps">
+        <li id="step-kb">
+          <div class="step-n">1</div>
+          <div class="step-body">
+            <h3>录入你的资料</h3>
+            <p id="step-kb-text" class="muted"></p>
+            <button class="primary" data-go="kb">去录入 / 上传简历</button>
+          </div>
+        </li>
+        <li id="step-ai">
+          <div class="step-n">2</div>
+          <div class="step-body">
+            <h3>接入 AI（可选，推荐）</h3>
+            <p id="step-ai-text" class="muted"></p>
+            <button data-go="ai">配置 AI 接口</button>
+          </div>
+        </li>
+        <li id="step-ext">
+          <div class="step-n">3</div>
+          <div class="step-body">
+            <h3>安装浏览器插件（只做一次）</h3>
+            <ol class="sub">
+              <li>点下面「打开扩展页」，在 Edge 里打开左下角的<b>开发人员模式</b></li>
+              <li>点<b>加载解压缩的扩展</b>，选择文件夹：<code id="ext-dir">…</code>
+                <button class="mini" id="copy-ext">复制路径</button> <button class="mini" id="open-ext-folder">打开文件夹</button></li>
+              <li>点工具栏拼图图标，把「网申自动填写」固定出来</li>
+            </ol>
+            <button id="open-ext">打开扩展页 edge://extensions</button>
+            <label class="check"><input type="checkbox" id="ext-done"> 我已经装好了</label>
+          </div>
+        </li>
+        <li id="step-go">
+          <div class="step-n">4</div>
+          <div class="step-body">
+            <h3>去网申</h3>
+            <p class="muted">保持本助手窗口开着。在 Edge 里登录并打开某个职位的申请表，点工具栏的蓝色勾图标，侧边栏里点「填写本页」。
+              填完后看「需要你处理」的条目，检查无误后<b>自己点提交</b>。</p>
+          </div>
+        </li>
+      </ol>
+    </section>
+
+    <!-- 知识库 -->
+    <section id="tab-kb" class="tab">
+      <h1>我的资料</h1>
+
+      <div class="card">
+        <div class="card-h"><h2>我的简历</h2>
+          <span class="muted small">基本信息（含证件号）所有简历共用；教育、经历、项目、论文、技能等每份简历各一套</span></div>
+        <div id="resume-chips" class="chips-row"></div>
+        <div id="new-resume" class="newbox" hidden>
+          <label>名称 <input id="nr-name" placeholder="如：技术岗中文版 / US Software Engineer"></label>
+          <label>类型 <select id="nr-locale"></select></label>
+          <label>内容 <select id="nr-copy"></select></label>
+          <button class="primary" id="nr-create">创建</button>
+          <button id="nr-cancel">取消</button>
+        </div>
+        <div id="resume-tools" class="row tools">
+          <label class="inline">名称 <input id="rt-name"></label>
+          <label class="inline">类型 <select id="rt-locale"></select></label>
+          <button id="rt-default">设为默认</button>
+          <button id="rt-copy">复制为新简历</button>
+          <button class="danger" id="rt-delete">删除</button>
+        </div>
+      </div>
+
+      <div class="kb-grid">
+        <div class="kb-left">
+          <div class="card">
+            <div class="card-h"><h2>知识库 <span class="muted small" id="kb-for"></span></h2><span id="notes-saved" class="muted"></span></div>
+            <textarea id="notes" placeholder="把你的信息随便写、随便贴在这里：简历全文、自我介绍、微信里发过的个人信息……&#10;点「AI 整理」后会自动拆进下面的资料表单，并告诉你还缺什么。"></textarea>
+            <div id="drop" class="drop" tabindex="0">
+              <input type="file" id="file" accept=".pdf,.docx,.txt,.md" hidden>
+              <b>上传简历</b>：把 PDF / Word 拖到这里，或 <button class="link" id="pick">选择文件</button>
+              <div id="resume-name" class="muted"></div>
+            </div>
+            <div class="row">
+              <button class="primary" id="ingest">AI 整理进资料</button>
+              <label class="check"><input type="checkbox" id="overwrite"> 覆盖已有内容</label>
+              <span id="ingest-hint" class="muted"></span>
+            </div>
+            <div id="ingest-result" class="notice" hidden></div>
+          </div>
+        </div>
+        <div class="kb-right">
+          <div class="card">
+            <h2>资料完整度</h2>
+            <div class="bar"><div id="bar-fill"></div></div>
+            <div id="pct" class="pct"></div>
+            <div id="missing"></div>
+          </div>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-h"><h2>资料表单</h2>
+          <div><span id="save-state" class="muted"></span> <button id="expand-all">全部展开</button> <button id="collapse-all">全部收起</button> <button class="primary" id="save">保存资料</button></div></div>
+        <p class="muted small">这里就是插件填表时用的资料。红框是缺失项，直接补上即可；点分区标题可以折叠 / 展开。</p>
+        <div id="form"></div>
+      </div>
+    </section>
+
+    <!-- AI 接口 -->
+    <section id="tab-ai" class="tab">
+      <h1>AI 接口</h1>
+      <p class="lead">规则认不出的字段、以及「AI 整理」会用到。可以配多家：排在前面的优先，报错、限流或欠费时自动换下一家。
+        AI 只会看到字段名称和选项，<b>不会看到你的资料内容</b>；只有你点「AI 整理」时，知识库里的文字才会发给它。</p>
+      <div id="providers"></div>
+      <div class="row">
+        <select id="add-preset"></select>
+        <button id="add-provider">＋ 添加</button>
+        <span class="spacer"></span>
+        <span id="llm-state" class="muted"></span>
+        <button class="primary" id="save-llm">保存</button>
+      </div>
+    </section>
+  </main>
+</div>
+<div id="toast" class="toast" hidden></div>
+<script src="app.js"></script>
+</body>
+</html>

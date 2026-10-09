@@ -1,0 +1,198 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<title>Demo · 飞书/Ant Design 风格网申表单</title>
+<style>
+  body { font: 14px/1.6 system-ui, sans-serif; background: #f5f6f7; margin: 0; }
+  .page { max-width: 760px; margin: 24px auto; background: #fff; padding: 24px 32px; border-radius: 8px; }
+  h3.section-title { border-left: 4px solid #3370ff; padding-left: 8px; margin: 28px 0 12px; }
+  .block { border: 1px dashed #ddd; padding: 8px 12px; margin-bottom: 10px; border-radius: 6px; }
+  .ant-form-item { display: flex; margin: 10px 0; align-items: flex-start; }
+  .ant-form-item-label { width: 140px; flex: none; color: #333; }
+  .ant-form-item-required::before { content: "*"; color: #f54a45; margin-right: 4px; }
+  .ant-form-item-control { flex: 1; }
+  .ant-input, textarea.ant-input { width: 100%; box-sizing: border-box; padding: 5px 8px; border: 1px solid #d0d3d6; border-radius: 4px; font: inherit; }
+  .ant-select { position: relative; border: 1px solid #d0d3d6; border-radius: 4px; padding: 5px 8px; cursor: pointer; min-height: 22px; }
+  .ant-select-selection-placeholder { color: #aaa; }
+  .ant-select-dropdown { position: absolute; background: #fff; border: 1px solid #ddd; box-shadow: 0 4px 12px rgba(0,0,0,.12); z-index: 1000; min-width: 200px; }
+  .ant-select-item-option { padding: 5px 12px; cursor: pointer; }
+  .ant-select-item-option:hover { background: #f0f4ff; }
+  .add-btn { color: #3370ff; cursor: pointer; display: inline-block; margin: 4px 0; }
+  .submit { margin-top: 24px; background: #3370ff; color: #fff; border: 0; padding: 8px 28px; border-radius: 4px; }
+</style>
+</head>
+<body>
+<div class="page">
+  <h2>小示书 2027 校园招聘 · 网申（Demo）</h2>
+
+  <h3 class="section-title">基本信息</h3>
+  <div class="ant-form-item"><div class="ant-form-item-label"><label class="ant-form-item-required">姓名</label></div>
+    <div class="ant-form-item-control"><input class="ant-input" data-key="name" placeholder="请输入"></div></div>
+  <div class="ant-form-item"><div class="ant-form-item-label"><label class="ant-form-item-required">手机号码</label></div>
+    <div class="ant-form-item-control"><input class="ant-input" type="tel" data-key="phone" placeholder="请输入"></div></div>
+  <div class="ant-form-item"><div class="ant-form-item-label"><label class="ant-form-item-required">邮箱</label></div>
+    <div class="ant-form-item-control"><input class="ant-input" type="email" data-key="email" placeholder="请输入"></div></div>
+  <div class="ant-form-item"><div class="ant-form-item-label"><label class="ant-form-item-required">性别</label></div>
+    <div class="ant-form-item-control"><div class="ant-select" data-key="gender" data-options="男,女"><div class="ant-select-selector"><span class="ant-select-selection-placeholder">请选择</span></div></div></div></div>
+  <div class="ant-form-item"><div class="ant-form-item-label"><label>出生日期</label></div>
+    <div class="ant-form-item-control"><input class="ant-input" type="date" data-key="birth"></div></div>
+  <div class="ant-form-item"><div class="ant-form-item-label"><label>政治面貌</label></div>
+    <div class="ant-form-item-control"><div class="ant-select" data-key="political" data-options="中共党员,中共预备党员,共青团员,群众,其他"><div class="ant-select-selector"><span class="ant-select-selection-placeholder">请选择</span></div></div></div></div>
+  <div class="ant-form-item"><div class="ant-form-item-label"><label>当前所在城市</label></div>
+    <div class="ant-form-item-control"><input class="ant-input" data-key="city" placeholder="请输入"></div></div>
+  <div class="ant-form-item"><div class="ant-form-item-label"><label class="ant-form-item-required">最快到岗时间</label></div>
+    <div class="ant-form-item-control"><div class="ant-select" data-key="available" data-options="随时到岗,一周内,一个月内,三个月内"><div class="ant-select-selector"><span class="ant-select-selection-placeholder">请选择</span></div></div></div></div>
+
+  <h3 class="section-title">教育经历</h3>
+  <div id="edu-list">
+    <div class="block edu">
+      <div class="ant-form-item"><div class="ant-form-item-label"><label class="ant-form-item-required">学校名称</label></div>
+        <div class="ant-form-item-control"><input class="ant-input" data-f="school" placeholder="请输入"></div></div>
+      <div class="ant-form-item"><div class="ant-form-item-label"><label class="ant-form-item-required">学历</label></div>
+        <div class="ant-form-item-control"><div class="ant-select" data-f="degree" data-options="大专,本科,硕士研究生,博士研究生"><div class="ant-select-selector"><span class="ant-select-selection-placeholder">请选择</span></div></div></div></div>
+      <div class="ant-form-item"><div class="ant-form-item-label"><label class="ant-form-item-required">专业</label></div>
+        <div class="ant-form-item-control"><input class="ant-input" data-f="major" placeholder="请输入"></div></div>
+      <div class="ant-form-item"><div class="ant-form-item-label"><label class="ant-form-item-required">入学时间</label></div>
+        <div class="ant-form-item-control"><input class="ant-input" type="month" data-f="start"></div></div>
+      <div class="ant-form-item"><div class="ant-form-item-label"><label class="ant-form-item-required">毕业时间</label></div>
+        <div class="ant-form-item-control"><input class="ant-input" type="month" data-f="end"></div></div>
+      <div class="ant-form-item"><div class="ant-form-item-label"><label>是否海外院校</label></div>
+        <div class="ant-form-item-control"><span class="radio-group">
+          <label><input type="radio" name="overseas-0" value="1"> 是</label>
+          <label><input type="radio" name="overseas-0" value="0"> 否</label></span></div></div>
+    </div>
+  </div>
+  <span class="add-btn" id="add-edu">+ 添加教育经历</span>
+
+  <h3 class="section-title">实习经历</h3>
+  <div id="work-list">
+    <div class="block work">
+      <div class="ant-form-item"><div class="ant-form-item-label"><label>公司名称</label></div>
+        <div class="ant-form-item-control"><input class="ant-input" data-f="company" placeholder="请输入"></div></div>
+      <div class="ant-form-item"><div class="ant-form-item-label"><label>职位名称</label></div>
+        <div class="ant-form-item-control"><input class="ant-input" data-f="title" placeholder="请输入"></div></div>
+      <div class="ant-form-item"><div class="ant-form-item-label"><label>开始时间</label></div>
+        <div class="ant-form-item-control"><input class="ant-input" data-f="start" placeholder="YYYY.MM"></div></div>
+      <div class="ant-form-item"><div class="ant-form-item-label"><label>结束时间</label></div>
+        <div class="ant-form-item-control"><input class="ant-input" data-f="end" placeholder="YYYY.MM"></div></div>
+      <div class="ant-form-item"><div class="ant-form-item-label"><label>工作内容</label></div>
+        <div class="ant-form-item-control"><textarea class="ant-input" rows="3" data-f="desc"></textarea></div></div>
+    </div>
+  </div>
+  <span class="add-btn" id="add-work">+ 添加实习经历</span>
+
+  <h3 class="section-title">项目经历</h3>
+  <div id="proj-list">
+    <div class="block proj">
+      <div class="ant-form-item"><div class="ant-form-item-label"><label>项目名称</label></div>
+        <div class="ant-form-item-control"><input class="ant-input" data-f="name" placeholder="请输入"></div></div>
+      <div class="ant-form-item"><div class="ant-form-item-label"><label>担任角色</label></div>
+        <div class="ant-form-item-control"><input class="ant-input" data-f="role" placeholder="请输入"></div></div>
+      <div class="ant-form-item"><div class="ant-form-item-label"><label>项目描述</label></div>
+        <div class="ant-form-item-control"><textarea class="ant-input" rows="3" data-f="desc"></textarea></div></div>
+    </div>
+  </div>
+  <span class="add-btn" id="add-proj">+ 添加项目经历</span>
+
+  <h3 class="section-title">其他信息</h3>
+  <div class="ant-form-item"><div class="ant-form-item-label"><label>英语水平</label></div>
+    <div class="ant-form-item-control"><div class="ant-select" data-key="english" data-options="CET-4,CET-6,雅思,托福,无"><div class="ant-select-selector"><span class="ant-select-selection-placeholder">请选择</span></div></div></div></div>
+  <div class="ant-form-item"><div class="ant-form-item-label"><label>GitHub</label></div>
+    <div class="ant-form-item-control"><input class="ant-input" data-key="github" placeholder="请输入链接"></div></div>
+  <div class="ant-form-item"><div class="ant-form-item-label"><label>自我评价</label></div>
+    <div class="ant-form-item-control"><textarea class="ant-input" rows="4" data-key="intro"></textarea></div></div>
+  <div class="ant-form-item"><div class="ant-form-item-label"><label>附件简历</label></div>
+    <div class="ant-form-item-control"><input type="file" data-key="resume"></div></div>
+  <div class="ant-form-item"><div class="ant-form-item-label"></div>
+    <div class="ant-form-item-control"><label><input type="checkbox" data-key="consent"> 我已阅读并同意《隐私政策》</label></div></div>
+
+  <button class="submit" id="submit" type="button">提交申请</button>
+</div>
+
+<script>
+  window.__submitted = false;
+  // 模拟站点解析简历：上传后往表单里写入（部分错误的）解析结果，和小红书实测一样
+  document.querySelector('[data-key=resume]').addEventListener('change', () => {
+    setTimeout(() => {
+      const name = document.querySelector('[data-key=name]');
+      name.value = '解析出错的名字';
+      const major = document.querySelector('#edu-list [data-f=major]');
+      major.value = '数据';
+    }, 300);
+  });
+  document.getElementById('submit').addEventListener('click', () => { window.__submitted = true; alert('已提交'); });
+
+  // ---- 模仿 Ant Design Select：mousedown 打开，弹层挂在 body 上 ----
+  let openDropdown = null;
+  function closeDropdown() { if (openDropdown) { openDropdown.remove(); openDropdown = null; } }
+  document.addEventListener('mousedown', (e) => {
+    const sel = e.target.closest('.ant-select');
+    if (!sel) { if (!e.target.closest('.ant-select-dropdown')) closeDropdown(); return; }
+    closeDropdown();
+    const r = sel.getBoundingClientRect();
+    const dd = document.createElement('div');
+    dd.className = 'ant-select-dropdown';
+    dd.style.left = (r.left + scrollX) + 'px';
+    dd.style.top = (r.bottom + scrollY + 2) + 'px';
+    sel.dataset.options.split(',').forEach((opt) => {
+      const item = document.createElement('div');
+      item.className = 'ant-select-item ant-select-item-option';
+      item.innerHTML = '<div class="ant-select-item-option-content"></div>';
+      item.firstChild.textContent = opt;
+      item.addEventListener('click', () => {
+        sel.dataset.value = opt;
+        sel.querySelector('.ant-select-selector').innerHTML = '<span class="ant-select-selection-item"></span>';
+        sel.querySelector('.ant-select-selection-item').textContent = opt;
+        closeDropdown();
+      });
+      dd.appendChild(item);
+    });
+    document.body.appendChild(dd);
+    openDropdown = dd;
+  });
+
+  // ---- 可重复段落 ----
+  let counter = 1;
+  function addBlock(listId) {
+    const list = document.getElementById(listId);
+    const tpl = list.firstElementChild.cloneNode(true);
+    tpl.querySelectorAll('input, textarea').forEach((el) => {
+      if (el.type === 'radio') { el.checked = false; el.name = el.name.replace(/-\d+$/, '-' + counter); }
+      else el.value = '';
+    });
+    tpl.querySelectorAll('.ant-select').forEach((s) => {
+      delete s.dataset.value;
+      s.querySelector('.ant-select-selector').innerHTML = '<span class="ant-select-selection-placeholder">请选择</span>';
+    });
+    counter++;
+    list.appendChild(tpl);
+  }
+  document.getElementById('add-edu').addEventListener('click', () => addBlock('edu-list'));
+  document.getElementById('add-work').addEventListener('click', () => addBlock('work-list'));
+  document.getElementById('add-proj').addEventListener('click', () => addBlock('proj-list'));
+
+  // ---- 测试用：读出整张表的值 ----
+  function val(el) {
+    if (!el) return '';
+    if (el.classList.contains('ant-select')) return el.dataset.value || '';
+    if (el.classList.contains('radio-group')) { const c = el.querySelector('input:checked'); return c ? c.parentElement.textContent.trim() : ''; }
+    if (el.type === 'checkbox') return el.checked;
+    return el.value;
+  }
+  window.__formValues = () => {
+    const out = {};
+    document.querySelectorAll('[data-key]').forEach((el) => { out[el.dataset.key] = val(el); });
+    [['edu-list', 'edu'], ['work-list', 'work'], ['proj-list', 'proj']].forEach(([id, p]) => {
+      [...document.getElementById(id).children].forEach((b, i) => {
+        b.querySelectorAll('[data-f]').forEach((el) => { out[`${p}.${i}.${el.dataset.f}`] = val(el); });
+        const rg = b.querySelector('.radio-group');
+        if (rg) out[`${p}.${i}.overseas`] = val(rg);
+      });
+    });
+    out.__submitted = window.__submitted;
+    return out;
+  };
+</script>
+</body>
+</html>

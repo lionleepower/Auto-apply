@@ -1,0 +1,663 @@
+{
+ "url": "https://poizon.jobs.feishu.cn/578078/resume/7672231558266554662/apply",
+ "fields": [
+  {
+   "id": "f1",
+   "kind": "radio",
+   "label": "推荐方式",
+   "options": [
+    "无",
+    "内推",
+    "大使推荐"
+   ],
+   "placeholder": "",
+   "section": "申请信息",
+   "sectionTrail": [
+    "申请信息",
+    "申请信息",
+    "【27届校招】大数据开发工程师-杭州",
+    "【27届校招】大数据开发工程师-杭州"
+   ],
+   "hint": ""
+  },
+  {
+   "id": "f2",
+   "kind": "text",
+   "label": "推荐码",
+   "options": [],
+   "placeholder": "请输入推荐码",
+   "section": "申请信息",
+   "sectionTrail": [
+    "申请信息",
+    "申请信息",
+    "【27届校招】大数据开发工程师-杭州",
+    "【27届校招】大数据开发工程师-杭州"
+   ],
+   "hint": ""
+  },
+  {
+   "id": "f3",
+   "kind": "file",
+   "label": "resume.pdf",
+   "options": [],
+   "placeholder": "",
+   "section": "简历",
+   "sectionTrail": [
+    "简历",
+    "申请信息",
+    "申请信息",
+    "【27届校招】大数据开发工程师-杭州",
+    "【27届校招】大数据开发工程师-杭州"
+   ],
+   "hint": ""
+  },
+  {
+   "id": "f4",
+   "kind": "text",
+   "label": "姓名",
+   "options": [],
+   "placeholder": "",
+   "section": "基本信息",
+   "sectionTrail": [
+    "基本信息",
+    "基本信息",
+    "解析并覆盖",
+    "将简历内容解析到下方表单？",
+    "简历"
+   ],
+   "hint": ""
+  },
+  {
+   "id": "f5",
+   "kind": "text",
+   "label": "邮箱",
+   "options": [],
+   "placeholder": "",
+   "section": "基本信息",
+   "sectionTrail": [
+    "基本信息",
+    "基本信息",
+    "解析并覆盖",
+    "将简历内容解析到下方表单？",
+    "简历"
+   ],
+   "hint": ""
+  },
+  {
+   "id": "f6",
+   "kind": "custom_select",
+   "label": "性别",
+   "options": [],
+   "placeholder": "",
+   "section": "基本信息",
+   "sectionTrail": [
+    "基本信息",
+    "基本信息",
+    "解析并覆盖",
+    "将简历内容解析到下方表单？",
+    "简历"
+   ],
+   "hint": ""
+  },
+  {
+   "id": "f7",
+   "kind": "text",
+   "label": "出生日期",
+   "options": [],
+   "placeholder": "YYYY-MM",
+   "section": "基本信息",
+   "sectionTrail": [
+    "基本信息",
+    "基本信息",
+    "解析并覆盖",
+    "将简历内容解析到下方表单？",
+    "简历"
+   ],
+   "hint": ""
+  },
+  {
+   "id": "f8",
+   "kind": "text",
+   "label": "证件号码",
+   "options": [],
+   "placeholder": "",
+   "section": "基本信息",
+   "sectionTrail": [
+    "基本信息",
+    "基本信息",
+    "解析并覆盖",
+    "将简历内容解析到下方表单？",
+    "简历"
+   ],
+   "hint": ""
+  },
+  {
+   "id": "f9",
+   "kind": "custom_select",
+   "label": "通过何种方式获知得物校招信息",
+   "options": [],
+   "placeholder": "",
+   "section": "基本信息",
+   "sectionTrail": [
+    "基本信息",
+    "基本信息",
+    "解析并覆盖",
+    "将简历内容解析到下方表单？",
+    "简历"
+   ],
+   "hint": ""
+  },
+  {
+   "id": "f10",
+   "kind": "text",
+   "label": "预计毕业时间",
+   "options": [],
+   "placeholder": "YYYY-MM",
+   "section": "基本信息",
+   "sectionTrail": [
+    "基本信息",
+    "基本信息",
+    "解析并覆盖",
+    "将简历内容解析到下方表单？",
+    "简历"
+   ],
+   "hint": ""
+  },
+  {
+   "id": "f11",
+   "kind": "text",
+   "label": "家庭现居住地",
+   "options": [],
+   "placeholder": "",
+   "section": "基本信息",
+   "sectionTrail": [
+    "基本信息",
+    "基本信息",
+    "解析并覆盖",
+    "将简历内容解析到下方表单？",
+    "简历"
+   ],
+   "hint": ""
+  },
+  {
+   "id": "f12",
+   "kind": "text",
+   "label": "学校名称",
+   "options": [],
+   "placeholder": "",
+   "section": "教育经历",
+   "sectionTrail": [
+    "教育经历",
+    "教育经历",
+    "基本信息",
+    "基本信息",
+    "解析并覆盖"
+   ],
+   "hint": ""
+  },
+  {
+   "id": "f13",
+   "kind": "custom_select",
+   "label": "学历",
+   "options": [],
+   "placeholder": "",
+   "section": "教育经历",
+   "sectionTrail": [
+    "教育经历",
+    "教育经历",
+    "基本信息",
+    "基本信息",
+    "解析并覆盖"
+   ],
+   "hint": ""
+  },
+  {
+   "id": "f14",
+   "kind": "text",
+   "label": "专业",
+   "options": [],
+   "placeholder": "",
+   "section": "教育经历",
+   "sectionTrail": [
+    "教育经历",
+    "教育经历",
+    "基本信息",
+    "基本信息",
+    "解析并覆盖"
+   ],
+   "hint": ""
+  },
+  {
+   "id": "f15",
+   "kind": "text",
+   "label": "",
+   "options": [],
+   "placeholder": "",
+   "section": "教育经历",
+   "sectionTrail": [
+    "教育经历",
+    "教育经历",
+    "基本信息",
+    "基本信息",
+    "解析并覆盖"
+   ],
+   "hint": ""
+  },
+  {
+   "id": "f16",
+   "kind": "text",
+   "label": "",
+   "options": [],
+   "placeholder": "",
+   "section": "教育经历",
+   "sectionTrail": [
+    "教育经历",
+    "教育经历",
+    "基本信息",
+    "基本信息",
+    "解析并覆盖"
+   ],
+   "hint": ""
+  },
+  {
+   "id": "f24",
+   "kind": "text",
+   "label": "学校名称",
+   "options": [],
+   "placeholder": "",
+   "section": "教育经历",
+   "sectionTrail": [
+    "教育经历",
+    "教育经历",
+    "基本信息",
+    "基本信息",
+    "解析并覆盖"
+   ],
+   "hint": ""
+  },
+  {
+   "id": "f25",
+   "kind": "custom_select",
+   "label": "学历",
+   "options": [],
+   "placeholder": "",
+   "section": "教育经历",
+   "sectionTrail": [
+    "教育经历",
+    "教育经历",
+    "基本信息",
+    "基本信息",
+    "解析并覆盖"
+   ],
+   "hint": ""
+  },
+  {
+   "id": "f26",
+   "kind": "text",
+   "label": "专业",
+   "options": [],
+   "placeholder": "",
+   "section": "教育经历",
+   "sectionTrail": [
+    "教育经历",
+    "教育经历",
+    "基本信息",
+    "基本信息",
+    "解析并覆盖"
+   ],
+   "hint": ""
+  },
+  {
+   "id": "f27",
+   "kind": "text",
+   "label": "",
+   "options": [],
+   "placeholder": "",
+   "section": "教育经历",
+   "sectionTrail": [
+    "教育经历",
+    "教育经历",
+    "基本信息",
+    "基本信息",
+    "解析并覆盖"
+   ],
+   "hint": ""
+  },
+  {
+   "id": "f28",
+   "kind": "text",
+   "label": "",
+   "options": [],
+   "placeholder": "",
+   "section": "教育经历",
+   "sectionTrail": [
+    "教育经历",
+    "教育经历",
+    "基本信息",
+    "基本信息",
+    "解析并覆盖"
+   ],
+   "hint": ""
+  },
+  {
+   "id": "f17",
+   "kind": "text",
+   "label": "请列出你常用的 AI 工具 & 模型（编码工具：Cursor、GitHub Copilot...... 大模型：GPT‑4o、Claude 3.7 Sonnet",
+   "options": [],
+   "placeholder": "",
+   "section": "AI技能运用",
+   "sectionTrail": [
+    "AI技能运用",
+    "AI技能运用",
+    "教育经历",
+    "教育经历",
+    "基本信息"
+   ],
+   "hint": ""
+  },
+  {
+   "id": "f18",
+   "kind": "text",
+   "label": "请描述一个与 AI 协作完成的项目或任务（请说明项目背景、遇到的问题、解决方案以及最终的结果）",
+   "options": [],
+   "placeholder": "",
+   "section": "AI技能运用",
+   "sectionTrail": [
+    "AI技能运用",
+    "AI技能运用",
+    "教育经历",
+    "教育经历",
+    "基本信息"
+   ],
+   "hint": ""
+  },
+  {
+   "id": "f19",
+   "kind": "file",
+   "label": "请将单个文件大小控制在 0MB-3MB 以内",
+   "options": [],
+   "placeholder": "",
+   "section": "AI技能运用",
+   "sectionTrail": [
+    "AI技能运用",
+    "AI技能运用",
+    "教育经历",
+    "教育经历",
+    "基本信息"
+   ],
+   "hint": ""
+  },
+  {
+   "id": "f44",
+   "kind": "text",
+   "label": "公司名称",
+   "options": [],
+   "placeholder": "",
+   "section": "实习经历",
+   "sectionTrail": [
+    "实习经历",
+    "实习经历",
+    "AI技能运用",
+    "AI技能运用",
+    "教育经历"
+   ],
+   "hint": ""
+  },
+  {
+   "id": "f45",
+   "kind": "text",
+   "label": "职位名称",
+   "options": [],
+   "placeholder": "",
+   "section": "实习经历",
+   "sectionTrail": [
+    "实习经历",
+    "实习经历",
+    "AI技能运用",
+    "AI技能运用",
+    "教育经历"
+   ],
+   "hint": ""
+  },
+  {
+   "id": "f46",
+   "kind": "text",
+   "label": "",
+   "options": [],
+   "placeholder": "",
+   "section": "实习经历",
+   "sectionTrail": [
+    "实习经历",
+    "实习经历",
+    "AI技能运用",
+    "AI技能运用",
+    "教育经历"
+   ],
+   "hint": ""
+  },
+  {
+   "id": "f47",
+   "kind": "text",
+   "label": "",
+   "options": [],
+   "placeholder": "",
+   "section": "实习经历",
+   "sectionTrail": [
+    "实习经历",
+    "实习经历",
+    "AI技能运用",
+    "AI技能运用",
+    "教育经历"
+   ],
+   "hint": ""
+  },
+  {
+   "id": "f48",
+   "kind": "textarea",
+   "label": "描述",
+   "options": [],
+   "placeholder": "",
+   "section": "实习经历",
+   "sectionTrail": [
+    "实习经历",
+    "实习经历",
+    "AI技能运用",
+    "AI技能运用",
+    "教育经历"
+   ],
+   "hint": ""
+  },
+  {
+   "id": "f30",
+   "kind": "text",
+   "label": "项目名称",
+   "options": [],
+   "placeholder": "",
+   "section": "项目经历",
+   "sectionTrail": [
+    "项目经历",
+    "项目经历",
+    "实习经历",
+    "实习经历",
+    "AI技能运用"
+   ],
+   "hint": ""
+  },
+  {
+   "id": "f31",
+   "kind": "text",
+   "label": "项目角色",
+   "options": [],
+   "placeholder": "",
+   "section": "项目经历",
+   "sectionTrail": [
+    "项目经历",
+    "项目经历",
+    "实习经历",
+    "实习经历",
+    "AI技能运用"
+   ],
+   "hint": ""
+  },
+  {
+   "id": "f32",
+   "kind": "text",
+   "label": "",
+   "options": [],
+   "placeholder": "",
+   "section": "项目经历",
+   "sectionTrail": [
+    "项目经历",
+    "项目经历",
+    "实习经历",
+    "实习经历",
+    "AI技能运用"
+   ],
+   "hint": ""
+  },
+  {
+   "id": "f33",
+   "kind": "text",
+   "label": "",
+   "options": [],
+   "placeholder": "",
+   "section": "项目经历",
+   "sectionTrail": [
+    "项目经历",
+    "项目经历",
+    "实习经历",
+    "实习经历",
+    "AI技能运用"
+   ],
+   "hint": ""
+  },
+  {
+   "id": "f34",
+   "kind": "text",
+   "label": "项目链接",
+   "options": [],
+   "placeholder": "",
+   "section": "项目经历",
+   "sectionTrail": [
+    "项目经历",
+    "项目经历",
+    "实习经历",
+    "实习经历",
+    "AI技能运用"
+   ],
+   "hint": ""
+  },
+  {
+   "id": "f35",
+   "kind": "textarea",
+   "label": "描述",
+   "options": [],
+   "placeholder": "",
+   "section": "项目经历",
+   "sectionTrail": [
+    "项目经历",
+    "项目经历",
+    "实习经历",
+    "实习经历",
+    "AI技能运用"
+   ],
+   "hint": ""
+  },
+  {
+   "id": "f37",
+   "kind": "text",
+   "label": "项目名称",
+   "options": [],
+   "placeholder": "",
+   "section": "项目经历",
+   "sectionTrail": [
+    "项目经历",
+    "项目经历",
+    "实习经历",
+    "实习经历",
+    "AI技能运用"
+   ],
+   "hint": ""
+  },
+  {
+   "id": "f38",
+   "kind": "text",
+   "label": "项目角色",
+   "options": [],
+   "placeholder": "",
+   "section": "项目经历",
+   "sectionTrail": [
+    "项目经历",
+    "项目经历",
+    "实习经历",
+    "实习经历",
+    "AI技能运用"
+   ],
+   "hint": ""
+  },
+  {
+   "id": "f39",
+   "kind": "text",
+   "label": "",
+   "options": [],
+   "placeholder": "",
+   "section": "项目经历",
+   "sectionTrail": [
+    "项目经历",
+    "项目经历",
+    "实习经历",
+    "实习经历",
+    "AI技能运用"
+   ],
+   "hint": ""
+  },
+  {
+   "id": "f40",
+   "kind": "text",
+   "label": "",
+   "options": [],
+   "placeholder": "",
+   "section": "项目经历",
+   "sectionTrail": [
+    "项目经历",
+    "项目经历",
+    "实习经历",
+    "实习经历",
+    "AI技能运用"
+   ],
+   "hint": ""
+  },
+  {
+   "id": "f41",
+   "kind": "text",
+   "label": "项目链接",
+   "options": [],
+   "placeholder": "",
+   "section": "项目经历",
+   "sectionTrail": [
+    "项目经历",
+    "项目经历",
+    "实习经历",
+    "实习经历",
+    "AI技能运用"
+   ],
+   "hint": ""
+  },
+  {
+   "id": "f42",
+   "kind": "textarea",
+   "label": "描述",
+   "options": [],
+   "placeholder": "",
+   "section": "项目经历",
+   "sectionTrail": [
+    "项目经历",
+    "项目经历",
+    "实习经历",
+    "实习经历",
+    "AI技能运用"
+   ],
+   "hint": ""
+  }
+ ]
+}

@@ -1,0 +1,1561 @@
+{
+ "url": "https://talent.baidu.com/jobs/resume/create",
+ "fields": [
+  {
+   "id": "f1",
+   "kind": "file",
+   "label": "resume.pdf",
+   "options": [],
+   "placeholder": "",
+   "section": "附件简历",
+   "sectionTrail": [
+    "附件简历",
+    "实习生简历",
+    "校招简历",
+    "社招简历",
+    "创建简历"
+   ],
+   "hint": ""
+  },
+  {
+   "id": "f2",
+   "kind": "text",
+   "label": "姓名",
+   "options": [],
+   "placeholder": "请输入真实姓名",
+   "section": "姓名",
+   "sectionTrail": [
+    "姓名",
+    "基础信息",
+    "基础信息",
+    "附件简历",
+    "实习生简历"
+   ],
+   "hint": "name"
+  },
+  {
+   "id": "f3",
+   "kind": "radio",
+   "label": "性别",
+   "options": [
+    "男",
+    "女",
+    "保密"
+   ],
+   "placeholder": "",
+   "section": "性别",
+   "sectionTrail": [
+    "性别",
+    "姓名",
+    "基础信息",
+    "基础信息",
+    "附件简历"
+   ],
+   "hint": ""
+  },
+  {
+   "id": "f4",
+   "kind": "custom_select",
+   "label": "",
+   "options": [],
+   "placeholder": "国籍/地区 中国",
+   "section": "性别",
+   "sectionTrail": [
+    "性别",
+    "姓名",
+    "基础信息",
+    "基础信息",
+    "附件简历"
+   ],
+   "hint": ""
+  },
+  {
+   "id": "f5",
+   "kind": "text",
+   "label": "请输入正确格式的手机号",
+   "options": [],
+   "placeholder": "请输入大陆11位手机号码",
+   "section": "移动电话",
+   "sectionTrail": [
+    "移动电话",
+    "性别",
+    "姓名",
+    "基础信息",
+    "基础信息"
+   ],
+   "hint": "mobile"
+  },
+  {
+   "id": "f6",
+   "kind": "text",
+   "label": "电子邮箱 建议使用网易或QQ邮箱；不建议使用Outlook、Gmail、教育邮箱",
+   "options": [],
+   "placeholder": "请填写常用个人邮箱，避免使用校内邮箱",
+   "section": "电子邮箱",
+   "sectionTrail": [
+    "电子邮箱",
+    "移动电话",
+    "性别",
+    "姓名",
+    "基础信息"
+   ],
+   "hint": "email"
+  },
+  {
+   "id": "f7",
+   "kind": "custom_select",
+   "label": "",
+   "options": [],
+   "placeholder": "目标工作城市 请选择 请选择",
+   "section": "电子邮箱",
+   "sectionTrail": [
+    "电子邮箱",
+    "移动电话",
+    "性别",
+    "姓名",
+    "基础信息"
+   ],
+   "hint": ""
+  },
+  {
+   "id": "f8",
+   "kind": "custom_select",
+   "label": "",
+   "options": [],
+   "placeholder": "目标职位类别 请选择 请选择",
+   "section": "电子邮箱",
+   "sectionTrail": [
+    "电子邮箱",
+    "移动电话",
+    "性别",
+    "姓名",
+    "基础信息"
+   ],
+   "hint": ""
+  },
+  {
+   "id": "f9",
+   "kind": "custom_select",
+   "label": "",
+   "options": [],
+   "placeholder": "可面试方式 请选择 请选择",
+   "section": "电子邮箱",
+   "sectionTrail": [
+    "电子邮箱",
+    "移动电话",
+    "性别",
+    "姓名",
+    "基础信息"
+   ],
+   "hint": ""
+  },
+  {
+   "id": "f10",
+   "kind": "date_picker",
+   "label": "",
+   "options": [],
+   "placeholder": "请选择",
+   "section": "电子邮箱",
+   "sectionTrail": [
+    "电子邮箱",
+    "移动电话",
+    "性别",
+    "姓名",
+    "基础信息"
+   ],
+   "hint": ""
+  },
+  {
+   "id": "f11",
+   "kind": "file",
+   "label": "建议上传png、jpg、jpeg格式照片，最大支持5M",
+   "options": [],
+   "placeholder": "",
+   "section": "个人照片",
+   "sectionTrail": [
+    "个人照片",
+    "预计毕业时间",
+    "电子邮箱",
+    "移动电话",
+    "性别"
+   ],
+   "hint": ""
+  },
+  {
+   "id": "f12",
+   "kind": "custom_select",
+   "label": "",
+   "options": [],
+   "placeholder": "身份证",
+   "section": "证件号码",
+   "sectionTrail": [
+    "证件号码",
+    "应聘信息",
+    "应聘信息",
+    "个人照片",
+    "预计毕业时间"
+   ],
+   "hint": ""
+  },
+  {
+   "id": "f13",
+   "kind": "text",
+   "label": "",
+   "options": [],
+   "placeholder": "请输入",
+   "section": "证件号码",
+   "sectionTrail": [
+    "证件号码",
+    "应聘信息",
+    "应聘信息",
+    "个人照片",
+    "预计毕业时间"
+   ],
+   "hint": "cardNum"
+  },
+  {
+   "id": "f14",
+   "kind": "custom_select",
+   "label": "",
+   "options": [],
+   "placeholder": "招聘信息来源 请选择 请选择",
+   "section": "证件号码",
+   "sectionTrail": [
+    "证件号码",
+    "应聘信息",
+    "应聘信息",
+    "个人照片",
+    "预计毕业时间"
+   ],
+   "hint": ""
+  },
+  {
+   "id": "f15",
+   "kind": "custom_select",
+   "label": "",
+   "options": [],
+   "placeholder": "可线下面试城市 请选择 请选择",
+   "section": "证件号码",
+   "sectionTrail": [
+    "证件号码",
+    "应聘信息",
+    "应聘信息",
+    "个人照片",
+    "预计毕业时间"
+   ],
+   "hint": ""
+  },
+  {
+   "id": "f16",
+   "kind": "custom_select",
+   "label": "",
+   "options": [],
+   "placeholder": "是否接受调剂 请选择 请选择",
+   "section": "证件号码",
+   "sectionTrail": [
+    "证件号码",
+    "应聘信息",
+    "应聘信息",
+    "个人照片",
+    "预计毕业时间"
+   ],
+   "hint": ""
+  },
+  {
+   "id": "f17",
+   "kind": "custom_select",
+   "label": "请输入学校全称搜索并从下拉列表中选择标准院校名称，搜索时不要加学院名或\"985/211/双一流\"等标签",
+   "options": [],
+   "placeholder": "",
+   "section": "学校",
+   "sectionTrail": [
+    "学校",
+    "教育经历-1",
+    "教育经历-1",
+    "教育经历",
+    "教育经历"
+   ],
+   "hint": "rc_select_3"
+  },
+  {
+   "id": "f18",
+   "kind": "date_picker",
+   "label": "",
+   "options": [],
+   "placeholder": "请选择开始时间",
+   "section": "起止时间",
+   "sectionTrail": [
+    "起止时间",
+    "学校",
+    "教育经历-1",
+    "教育经历-1",
+    "教育经历"
+   ],
+   "hint": ""
+  },
+  {
+   "id": "f19",
+   "kind": "date_picker",
+   "label": "",
+   "options": [],
+   "placeholder": "请选择结束时间",
+   "section": "起止时间",
+   "sectionTrail": [
+    "起止时间",
+    "学校",
+    "教育经历-1",
+    "教育经历-1",
+    "教育经历"
+   ],
+   "hint": ""
+  },
+  {
+   "id": "f20",
+   "kind": "custom_select",
+   "label": "",
+   "options": [],
+   "placeholder": "学历 请选择 请选择",
+   "section": "起止时间",
+   "sectionTrail": [
+    "起止时间",
+    "学校",
+    "教育经历-1",
+    "教育经历-1",
+    "教育经历"
+   ],
+   "hint": ""
+  },
+  {
+   "id": "f21",
+   "kind": "custom_select",
+   "label": "专业",
+   "options": [],
+   "placeholder": "",
+   "section": "专业",
+   "sectionTrail": [
+    "专业",
+    "起止时间",
+    "学校",
+    "教育经历-1",
+    "教育经历-1"
+   ],
+   "hint": "rc_select_4"
+  },
+  {
+   "id": "f22",
+   "kind": "custom_select",
+   "label": "GPA类型",
+   "options": [],
+   "placeholder": "其他",
+   "section": "GPA类型",
+   "sectionTrail": [
+    "GPA类型",
+    "专业",
+    "起止时间",
+    "学校",
+    "教育经历-1"
+   ],
+   "hint": ""
+  },
+  {
+   "id": "f23",
+   "kind": "text",
+   "label": "GPA成绩 请输入",
+   "options": [],
+   "placeholder": "请输入你的绩点",
+   "section": "GPA成绩",
+   "sectionTrail": [
+    "GPA成绩",
+    "GPA类型",
+    "专业",
+    "起止时间",
+    "学校"
+   ],
+   "hint": "gpa0"
+  },
+  {
+   "id": "f24",
+   "kind": "custom_select",
+   "label": "",
+   "options": [],
+   "placeholder": "成绩排名 请选择 请输入",
+   "section": "GPA成绩",
+   "sectionTrail": [
+    "GPA成绩",
+    "GPA类型",
+    "专业",
+    "起止时间",
+    "学校"
+   ],
+   "hint": ""
+  },
+  {
+   "id": "f25",
+   "kind": "custom_select",
+   "label": "请输入学校全称搜索并从下拉列表中选择标准院校名称，搜索时不要加学院名或\"985/211/双一流\"等标签",
+   "options": [],
+   "placeholder": "",
+   "section": "学校",
+   "sectionTrail": [
+    "学校",
+    "教育经历-2",
+    "教育经历-2",
+    "GPA成绩",
+    "GPA类型"
+   ],
+   "hint": "rc_select_5"
+  },
+  {
+   "id": "f26",
+   "kind": "date_picker",
+   "label": "",
+   "options": [],
+   "placeholder": "请选择开始时间",
+   "section": "起止时间",
+   "sectionTrail": [
+    "起止时间",
+    "学校",
+    "教育经历-2",
+    "教育经历-2",
+    "GPA成绩"
+   ],
+   "hint": ""
+  },
+  {
+   "id": "f27",
+   "kind": "date_picker",
+   "label": "",
+   "options": [],
+   "placeholder": "请选择结束时间",
+   "section": "起止时间",
+   "sectionTrail": [
+    "起止时间",
+    "学校",
+    "教育经历-2",
+    "教育经历-2",
+    "GPA成绩"
+   ],
+   "hint": ""
+  },
+  {
+   "id": "f28",
+   "kind": "custom_select",
+   "label": "",
+   "options": [],
+   "placeholder": "学历 本科",
+   "section": "起止时间",
+   "sectionTrail": [
+    "起止时间",
+    "学校",
+    "教育经历-2",
+    "教育经历-2",
+    "GPA成绩"
+   ],
+   "hint": ""
+  },
+  {
+   "id": "f29",
+   "kind": "custom_select",
+   "label": "专业",
+   "options": [],
+   "placeholder": "",
+   "section": "专业",
+   "sectionTrail": [
+    "专业",
+    "起止时间",
+    "学校",
+    "教育经历-2",
+    "教育经历-2"
+   ],
+   "hint": "rc_select_6"
+  },
+  {
+   "id": "f30",
+   "kind": "custom_select",
+   "label": "GPA类型",
+   "options": [],
+   "placeholder": "其他",
+   "section": "GPA类型",
+   "sectionTrail": [
+    "GPA类型",
+    "专业",
+    "起止时间",
+    "学校",
+    "教育经历-2"
+   ],
+   "hint": ""
+  },
+  {
+   "id": "f31",
+   "kind": "text",
+   "label": "GPA成绩 请输入",
+   "options": [],
+   "placeholder": "请输入你的绩点",
+   "section": "GPA成绩",
+   "sectionTrail": [
+    "GPA成绩",
+    "GPA类型",
+    "专业",
+    "起止时间",
+    "学校"
+   ],
+   "hint": "gpa1"
+  },
+  {
+   "id": "f32",
+   "kind": "custom_select",
+   "label": "",
+   "options": [],
+   "placeholder": "成绩排名 请选择 请输入",
+   "section": "GPA成绩",
+   "sectionTrail": [
+    "GPA成绩",
+    "GPA类型",
+    "专业",
+    "起止时间",
+    "学校"
+   ],
+   "hint": ""
+  },
+  {
+   "id": "f33",
+   "kind": "custom_select",
+   "label": "请输入学校全称搜索并从下拉列表中选择标准院校名称，搜索时不要加学院名或\"985/211/双一流\"等标签",
+   "options": [],
+   "placeholder": "",
+   "section": "学校",
+   "sectionTrail": [
+    "学校",
+    "教育经历-3",
+    "教育经历-3",
+    "GPA成绩",
+    "GPA类型"
+   ],
+   "hint": "rc_select_7"
+  },
+  {
+   "id": "f34",
+   "kind": "date_picker",
+   "label": "",
+   "options": [],
+   "placeholder": "请选择开始时间",
+   "section": "起止时间",
+   "sectionTrail": [
+    "起止时间",
+    "学校",
+    "教育经历-3",
+    "教育经历-3",
+    "GPA成绩"
+   ],
+   "hint": ""
+  },
+  {
+   "id": "f35",
+   "kind": "date_picker",
+   "label": "",
+   "options": [],
+   "placeholder": "请选择结束时间",
+   "section": "起止时间",
+   "sectionTrail": [
+    "起止时间",
+    "学校",
+    "教育经历-3",
+    "教育经历-3",
+    "GPA成绩"
+   ],
+   "hint": ""
+  },
+  {
+   "id": "f36",
+   "kind": "custom_select",
+   "label": "",
+   "options": [],
+   "placeholder": "学历 本科",
+   "section": "起止时间",
+   "sectionTrail": [
+    "起止时间",
+    "学校",
+    "教育经历-3",
+    "教育经历-3",
+    "GPA成绩"
+   ],
+   "hint": ""
+  },
+  {
+   "id": "f37",
+   "kind": "custom_select",
+   "label": "专业",
+   "options": [],
+   "placeholder": "",
+   "section": "专业",
+   "sectionTrail": [
+    "专业",
+    "起止时间",
+    "学校",
+    "教育经历-3",
+    "教育经历-3"
+   ],
+   "hint": "rc_select_8"
+  },
+  {
+   "id": "f38",
+   "kind": "custom_select",
+   "label": "GPA类型",
+   "options": [],
+   "placeholder": "其他",
+   "section": "GPA类型",
+   "sectionTrail": [
+    "GPA类型",
+    "专业",
+    "起止时间",
+    "学校",
+    "教育经历-3"
+   ],
+   "hint": ""
+  },
+  {
+   "id": "f39",
+   "kind": "text",
+   "label": "GPA成绩 请输入",
+   "options": [],
+   "placeholder": "请输入你的绩点",
+   "section": "GPA成绩",
+   "sectionTrail": [
+    "GPA成绩",
+    "GPA类型",
+    "专业",
+    "起止时间",
+    "学校"
+   ],
+   "hint": "gpa2"
+  },
+  {
+   "id": "f40",
+   "kind": "custom_select",
+   "label": "",
+   "options": [],
+   "placeholder": "成绩排名 请选择 请输入",
+   "section": "GPA成绩",
+   "sectionTrail": [
+    "GPA成绩",
+    "GPA类型",
+    "专业",
+    "起止时间",
+    "学校"
+   ],
+   "hint": ""
+  },
+  {
+   "id": "f41",
+   "kind": "checkbox",
+   "label": "无学术成果",
+   "options": [],
+   "placeholder": "",
+   "section": "学术成果",
+   "sectionTrail": [
+    "学术成果",
+    "学术成果",
+    "GPA成绩",
+    "GPA类型",
+    "专业"
+   ],
+   "hint": ""
+  },
+  {
+   "id": "f42",
+   "kind": "custom_select",
+   "label": "会议/期刊名称",
+   "options": [],
+   "placeholder": "",
+   "section": "会议/期刊名称",
+   "sectionTrail": [
+    "会议/期刊名称",
+    "学术成果-1",
+    "学术成果-1",
+    "学术成果",
+    "学术成果"
+   ],
+   "hint": "rc_select_9"
+  },
+  {
+   "id": "f43",
+   "kind": "text",
+   "label": "论文名称",
+   "options": [],
+   "placeholder": "请输入",
+   "section": "论文名称",
+   "sectionTrail": [
+    "论文名称",
+    "会议/期刊档位",
+    "会议/期刊名称",
+    "学术成果-1",
+    "学术成果-1"
+   ],
+   "hint": "articleTitle0"
+  },
+  {
+   "id": "f44",
+   "kind": "custom_select",
+   "label": "",
+   "options": [],
+   "placeholder": "作者排序 一作",
+   "section": "论文名称",
+   "sectionTrail": [
+    "论文名称",
+    "会议/期刊档位",
+    "会议/期刊名称",
+    "学术成果-1",
+    "学术成果-1"
+   ],
+   "hint": ""
+  },
+  {
+   "id": "f45",
+   "kind": "text",
+   "label": "论文链接 请输入",
+   "options": [],
+   "placeholder": "请输入",
+   "section": "论文链接",
+   "sectionTrail": [
+    "论文链接",
+    "论文名称",
+    "会议/期刊档位",
+    "会议/期刊名称",
+    "学术成果-1"
+   ],
+   "hint": "articleUrl0"
+  },
+  {
+   "id": "f46",
+   "kind": "file",
+   "label": "请上传，仅支持上传pdf文件，限制50M",
+   "options": [],
+   "placeholder": "",
+   "section": "上传论文",
+   "sectionTrail": [
+    "上传论文",
+    "论文链接",
+    "论文名称",
+    "会议/期刊档位",
+    "会议/期刊名称"
+   ],
+   "hint": ""
+  },
+  {
+   "id": "f47",
+   "kind": "checkbox",
+   "label": "无工作经历",
+   "options": [],
+   "placeholder": "",
+   "section": "工作经历",
+   "sectionTrail": [
+    "工作经历",
+    "工作经历",
+    "上传论文",
+    "论文链接",
+    "论文名称"
+   ],
+   "hint": ""
+  },
+  {
+   "id": "f48",
+   "kind": "text",
+   "label": "企业名称",
+   "options": [],
+   "placeholder": "请输入",
+   "section": "企业名称",
+   "sectionTrail": [
+    "企业名称",
+    "工作经历-1",
+    "工作经历-1",
+    "工作经历",
+    "工作经历"
+   ],
+   "hint": "companyName0"
+  },
+  {
+   "id": "f49",
+   "kind": "custom_select",
+   "label": "",
+   "options": [],
+   "placeholder": "行业类别 请选择 请选择",
+   "section": "企业名称",
+   "sectionTrail": [
+    "企业名称",
+    "工作经历-1",
+    "工作经历-1",
+    "工作经历",
+    "工作经历"
+   ],
+   "hint": ""
+  },
+  {
+   "id": "f50",
+   "kind": "date_picker",
+   "label": "",
+   "options": [],
+   "placeholder": "请选择开始时间",
+   "section": "起止时间",
+   "sectionTrail": [
+    "起止时间",
+    "企业名称",
+    "工作经历-1",
+    "工作经历-1",
+    "工作经历"
+   ],
+   "hint": ""
+  },
+  {
+   "id": "f51",
+   "kind": "date_picker",
+   "label": "",
+   "options": [],
+   "placeholder": "请选择结束时间",
+   "section": "起止时间",
+   "sectionTrail": [
+    "起止时间",
+    "企业名称",
+    "工作经历-1",
+    "工作经历-1",
+    "工作经历"
+   ],
+   "hint": ""
+  },
+  {
+   "id": "f52",
+   "kind": "text",
+   "label": "所在部门",
+   "options": [],
+   "placeholder": "请输入",
+   "section": "所在部门",
+   "sectionTrail": [
+    "所在部门",
+    "起止时间",
+    "企业名称",
+    "工作经历-1",
+    "工作经历-1"
+   ],
+   "hint": "department0"
+  },
+  {
+   "id": "f53",
+   "kind": "text",
+   "label": "职位名称",
+   "options": [],
+   "placeholder": "请输入",
+   "section": "职位名称",
+   "sectionTrail": [
+    "职位名称",
+    "所在部门",
+    "起止时间",
+    "企业名称",
+    "工作经历-1"
+   ],
+   "hint": "positionName0"
+  },
+  {
+   "id": "f54",
+   "kind": "custom_select",
+   "label": "",
+   "options": [],
+   "placeholder": "职位年薪 请选择",
+   "section": "职位名称",
+   "sectionTrail": [
+    "职位名称",
+    "所在部门",
+    "起止时间",
+    "企业名称",
+    "工作经历-1"
+   ],
+   "hint": ""
+  },
+  {
+   "id": "f55",
+   "kind": "custom_select",
+   "label": "",
+   "options": [],
+   "placeholder": "工作地点 请选择",
+   "section": "职位名称",
+   "sectionTrail": [
+    "职位名称",
+    "所在部门",
+    "起止时间",
+    "企业名称",
+    "工作经历-1"
+   ],
+   "hint": ""
+  },
+  {
+   "id": "f56",
+   "kind": "textarea",
+   "label": "工作描述",
+   "options": [],
+   "placeholder": "请输入",
+   "section": "工作描述",
+   "sectionTrail": [
+    "工作描述",
+    "职位名称",
+    "所在部门",
+    "起止时间",
+    "企业名称"
+   ],
+   "hint": "workDesc0"
+  },
+  {
+   "id": "f57",
+   "kind": "text",
+   "label": "企业名称",
+   "options": [],
+   "placeholder": "请输入",
+   "section": "企业名称",
+   "sectionTrail": [
+    "企业名称",
+    "工作经历-2",
+    "工作经历-2",
+    "工作描述",
+    "职位名称"
+   ],
+   "hint": "companyName1"
+  },
+  {
+   "id": "f58",
+   "kind": "custom_select",
+   "label": "",
+   "options": [],
+   "placeholder": "行业类别 请选择 请选择",
+   "section": "企业名称",
+   "sectionTrail": [
+    "企业名称",
+    "工作经历-2",
+    "工作经历-2",
+    "工作描述",
+    "职位名称"
+   ],
+   "hint": ""
+  },
+  {
+   "id": "f59",
+   "kind": "date_picker",
+   "label": "",
+   "options": [],
+   "placeholder": "请选择开始时间",
+   "section": "起止时间",
+   "sectionTrail": [
+    "起止时间",
+    "企业名称",
+    "工作经历-2",
+    "工作经历-2",
+    "工作描述"
+   ],
+   "hint": ""
+  },
+  {
+   "id": "f60",
+   "kind": "date_picker",
+   "label": "",
+   "options": [],
+   "placeholder": "请选择结束时间",
+   "section": "起止时间",
+   "sectionTrail": [
+    "起止时间",
+    "企业名称",
+    "工作经历-2",
+    "工作经历-2",
+    "工作描述"
+   ],
+   "hint": ""
+  },
+  {
+   "id": "f61",
+   "kind": "text",
+   "label": "所在部门 请输入",
+   "options": [],
+   "placeholder": "请输入",
+   "section": "所在部门",
+   "sectionTrail": [
+    "所在部门",
+    "起止时间",
+    "企业名称",
+    "工作经历-2",
+    "工作经历-2"
+   ],
+   "hint": "department1"
+  },
+  {
+   "id": "f62",
+   "kind": "text",
+   "label": "职位名称",
+   "options": [],
+   "placeholder": "请输入",
+   "section": "职位名称",
+   "sectionTrail": [
+    "职位名称",
+    "所在部门",
+    "起止时间",
+    "企业名称",
+    "工作经历-2"
+   ],
+   "hint": "positionName1"
+  },
+  {
+   "id": "f63",
+   "kind": "custom_select",
+   "label": "",
+   "options": [],
+   "placeholder": "职位年薪 请选择",
+   "section": "职位名称",
+   "sectionTrail": [
+    "职位名称",
+    "所在部门",
+    "起止时间",
+    "企业名称",
+    "工作经历-2"
+   ],
+   "hint": ""
+  },
+  {
+   "id": "f64",
+   "kind": "custom_select",
+   "label": "",
+   "options": [],
+   "placeholder": "工作地点 请选择",
+   "section": "职位名称",
+   "sectionTrail": [
+    "职位名称",
+    "所在部门",
+    "起止时间",
+    "企业名称",
+    "工作经历-2"
+   ],
+   "hint": ""
+  },
+  {
+   "id": "f65",
+   "kind": "textarea",
+   "label": "工作描述",
+   "options": [],
+   "placeholder": "请输入",
+   "section": "工作描述",
+   "sectionTrail": [
+    "工作描述",
+    "职位名称",
+    "所在部门",
+    "起止时间",
+    "企业名称"
+   ],
+   "hint": "workDesc1"
+  },
+  {
+   "id": "f66",
+   "kind": "text",
+   "label": "项目名称",
+   "options": [],
+   "placeholder": "请输入",
+   "section": "项目名称",
+   "sectionTrail": [
+    "项目名称",
+    "项目经验",
+    "项目经验",
+    "工作描述",
+    "职位名称"
+   ],
+   "hint": "subjectName0"
+  },
+  {
+   "id": "f67",
+   "kind": "text",
+   "label": "项目职务",
+   "options": [],
+   "placeholder": "请输入",
+   "section": "项目职务",
+   "sectionTrail": [
+    "项目职务",
+    "项目名称",
+    "项目经验",
+    "项目经验",
+    "工作描述"
+   ],
+   "hint": "position0"
+  },
+  {
+   "id": "f68",
+   "kind": "date_picker",
+   "label": "",
+   "options": [],
+   "placeholder": "请选择开始时间",
+   "section": "起止时间",
+   "sectionTrail": [
+    "起止时间",
+    "项目职务",
+    "项目名称",
+    "项目经验",
+    "项目经验"
+   ],
+   "hint": ""
+  },
+  {
+   "id": "f69",
+   "kind": "date_picker",
+   "label": "",
+   "options": [],
+   "placeholder": "请选择结束时间",
+   "section": "起止时间",
+   "sectionTrail": [
+    "起止时间",
+    "项目职务",
+    "项目名称",
+    "项目经验",
+    "项目经验"
+   ],
+   "hint": ""
+  },
+  {
+   "id": "f70",
+   "kind": "textarea",
+   "label": "项目描述",
+   "options": [],
+   "placeholder": "请输入",
+   "section": "项目描述",
+   "sectionTrail": [
+    "项目描述",
+    "起止时间",
+    "项目职务",
+    "项目名称",
+    "项目经验"
+   ],
+   "hint": "subjectDesc0"
+  },
+  {
+   "id": "f71",
+   "kind": "textarea",
+   "label": "项目职责",
+   "options": [],
+   "placeholder": "请输入",
+   "section": "项目职责",
+   "sectionTrail": [
+    "项目职责",
+    "项目描述",
+    "起止时间",
+    "项目职务",
+    "项目名称"
+   ],
+   "hint": "positionDesc0"
+  },
+  {
+   "id": "f85",
+   "kind": "text",
+   "label": "项目名称",
+   "options": [],
+   "placeholder": "请输入",
+   "section": "项目名称",
+   "sectionTrail": [
+    "项目名称",
+    "项目职责",
+    "项目描述",
+    "起止时间",
+    "项目职务"
+   ],
+   "hint": "subjectName1"
+  },
+  {
+   "id": "f86",
+   "kind": "text",
+   "label": "项目职务",
+   "options": [],
+   "placeholder": "请输入",
+   "section": "项目职务",
+   "sectionTrail": [
+    "项目职务",
+    "项目名称",
+    "项目职责",
+    "项目描述",
+    "起止时间"
+   ],
+   "hint": "position1"
+  },
+  {
+   "id": "f87",
+   "kind": "date_picker",
+   "label": "",
+   "options": [],
+   "placeholder": "请选择开始时间",
+   "section": "起止时间",
+   "sectionTrail": [
+    "起止时间",
+    "项目职务",
+    "项目名称",
+    "项目职责",
+    "项目描述"
+   ],
+   "hint": ""
+  },
+  {
+   "id": "f88",
+   "kind": "date_picker",
+   "label": "",
+   "options": [],
+   "placeholder": "请选择结束时间",
+   "section": "起止时间",
+   "sectionTrail": [
+    "起止时间",
+    "项目职务",
+    "项目名称",
+    "项目职责",
+    "项目描述"
+   ],
+   "hint": ""
+  },
+  {
+   "id": "f89",
+   "kind": "textarea",
+   "label": "项目描述",
+   "options": [],
+   "placeholder": "请输入",
+   "section": "项目描述",
+   "sectionTrail": [
+    "项目描述",
+    "起止时间",
+    "项目职务",
+    "项目名称",
+    "项目职责"
+   ],
+   "hint": "subjectDesc1"
+  },
+  {
+   "id": "f90",
+   "kind": "textarea",
+   "label": "项目职责",
+   "options": [],
+   "placeholder": "请输入",
+   "section": "项目职责",
+   "sectionTrail": [
+    "项目职责",
+    "项目描述",
+    "起止时间",
+    "项目职务",
+    "项目名称"
+   ],
+   "hint": "positionDesc1"
+  },
+  {
+   "id": "f91",
+   "kind": "text",
+   "label": "项目名称",
+   "options": [],
+   "placeholder": "请输入",
+   "section": "项目名称",
+   "sectionTrail": [
+    "项目名称",
+    "项目职责",
+    "项目描述",
+    "起止时间",
+    "项目职务"
+   ],
+   "hint": "subjectName2"
+  },
+  {
+   "id": "f92",
+   "kind": "text",
+   "label": "项目职务",
+   "options": [],
+   "placeholder": "请输入",
+   "section": "项目职务",
+   "sectionTrail": [
+    "项目职务",
+    "项目名称",
+    "项目职责",
+    "项目描述",
+    "起止时间"
+   ],
+   "hint": "position2"
+  },
+  {
+   "id": "f93",
+   "kind": "date_picker",
+   "label": "",
+   "options": [],
+   "placeholder": "请选择开始时间",
+   "section": "起止时间",
+   "sectionTrail": [
+    "起止时间",
+    "项目职务",
+    "项目名称",
+    "项目职责",
+    "项目描述"
+   ],
+   "hint": ""
+  },
+  {
+   "id": "f94",
+   "kind": "date_picker",
+   "label": "",
+   "options": [],
+   "placeholder": "请选择结束时间",
+   "section": "起止时间",
+   "sectionTrail": [
+    "起止时间",
+    "项目职务",
+    "项目名称",
+    "项目职责",
+    "项目描述"
+   ],
+   "hint": ""
+  },
+  {
+   "id": "f95",
+   "kind": "textarea",
+   "label": "项目描述",
+   "options": [],
+   "placeholder": "请输入",
+   "section": "项目描述",
+   "sectionTrail": [
+    "项目描述",
+    "起止时间",
+    "项目职务",
+    "项目名称",
+    "项目职责"
+   ],
+   "hint": "subjectDesc2"
+  },
+  {
+   "id": "f96",
+   "kind": "textarea",
+   "label": "项目职责",
+   "options": [],
+   "placeholder": "请输入",
+   "section": "项目职责",
+   "sectionTrail": [
+    "项目职责",
+    "项目描述",
+    "起止时间",
+    "项目职务",
+    "项目名称"
+   ],
+   "hint": "positionDesc2"
+  },
+  {
+   "id": "f97",
+   "kind": "text",
+   "label": "项目名称",
+   "options": [],
+   "placeholder": "请输入",
+   "section": "项目名称",
+   "sectionTrail": [
+    "项目名称",
+    "项目职责",
+    "项目描述",
+    "起止时间",
+    "项目职务"
+   ],
+   "hint": "subjectName3"
+  },
+  {
+   "id": "f98",
+   "kind": "text",
+   "label": "项目职务",
+   "options": [],
+   "placeholder": "请输入",
+   "section": "项目职务",
+   "sectionTrail": [
+    "项目职务",
+    "项目名称",
+    "项目职责",
+    "项目描述",
+    "起止时间"
+   ],
+   "hint": "position3"
+  },
+  {
+   "id": "f99",
+   "kind": "date_picker",
+   "label": "",
+   "options": [],
+   "placeholder": "请选择开始时间",
+   "section": "起止时间",
+   "sectionTrail": [
+    "起止时间",
+    "项目职务",
+    "项目名称",
+    "项目职责",
+    "项目描述"
+   ],
+   "hint": ""
+  },
+  {
+   "id": "f100",
+   "kind": "date_picker",
+   "label": "",
+   "options": [],
+   "placeholder": "请选择结束时间",
+   "section": "起止时间",
+   "sectionTrail": [
+    "起止时间",
+    "项目职务",
+    "项目名称",
+    "项目职责",
+    "项目描述"
+   ],
+   "hint": ""
+  },
+  {
+   "id": "f101",
+   "kind": "textarea",
+   "label": "项目描述",
+   "options": [],
+   "placeholder": "请输入",
+   "section": "项目描述",
+   "sectionTrail": [
+    "项目描述",
+    "起止时间",
+    "项目职务",
+    "项目名称",
+    "项目职责"
+   ],
+   "hint": "subjectDesc3"
+  },
+  {
+   "id": "f102",
+   "kind": "textarea",
+   "label": "项目职责",
+   "options": [],
+   "placeholder": "请输入",
+   "section": "项目职责",
+   "sectionTrail": [
+    "项目职责",
+    "项目描述",
+    "起止时间",
+    "项目职务",
+    "项目名称"
+   ],
+   "hint": "positionDesc3"
+  },
+  {
+   "id": "f72",
+   "kind": "checkbox",
+   "label": "无获奖信息",
+   "options": [],
+   "placeholder": "",
+   "section": "获奖信息",
+   "sectionTrail": [
+    "获奖信息",
+    "获奖信息",
+    "项目职责",
+    "项目描述",
+    "起止时间"
+   ],
+   "hint": ""
+  },
+  {
+   "id": "f73",
+   "kind": "custom_select",
+   "label": "",
+   "options": [],
+   "placeholder": "获奖类型 其他",
+   "section": "获奖信息-1",
+   "sectionTrail": [
+    "获奖信息-1",
+    "获奖信息-1",
+    "获奖信息",
+    "获奖信息",
+    "项目职责"
+   ],
+   "hint": ""
+  },
+  {
+   "id": "f74",
+   "kind": "text",
+   "label": "奖项名称 请选择",
+   "options": [],
+   "placeholder": "请输入",
+   "section": "奖项名称",
+   "sectionTrail": [
+    "奖项名称",
+    "获奖信息-1",
+    "获奖信息-1",
+    "获奖信息",
+    "获奖信息"
+   ],
+   "hint": "awardName0"
+  },
+  {
+   "id": "f75",
+   "kind": "text",
+   "label": "奖项说明",
+   "options": [],
+   "placeholder": "请输入",
+   "section": "奖项说明",
+   "sectionTrail": [
+    "奖项说明",
+    "奖项名称",
+    "获奖信息-1",
+    "获奖信息-1",
+    "获奖信息"
+   ],
+   "hint": "awardInfo0"
+  },
+  {
+   "id": "f76",
+   "kind": "text",
+   "label": "作品描述",
+   "options": [],
+   "placeholder": "请输入",
+   "section": "作品描述",
+   "sectionTrail": [
+    "作品描述",
+    "可上传相关作品集展示",
+    "作品集",
+    "作品集",
+    "奖项说明"
+   ],
+   "hint": "portfolioDesc"
+  },
+  {
+   "id": "f77",
+   "kind": "text",
+   "label": "作品链接",
+   "options": [],
+   "placeholder": "请输入",
+   "section": "作品链接",
+   "sectionTrail": [
+    "作品链接",
+    "作品描述",
+    "可上传相关作品集展示",
+    "作品集",
+    "作品集"
+   ],
+   "hint": "portfolioAddress"
+  },
+  {
+   "id": "f78",
+   "kind": "file",
+   "label": "拖拽/点击上传您的作品集 附件不限格式，最大支持50M，超出请附作品链接",
+   "options": [],
+   "placeholder": "",
+   "section": "作品链接",
+   "sectionTrail": [
+    "作品链接",
+    "作品描述",
+    "可上传相关作品集展示",
+    "作品集",
+    "作品集"
+   ],
+   "hint": ""
+  },
+  {
+   "id": "f79",
+   "kind": "checkbox",
+   "label": "我已阅读并同意",
+   "options": [],
+   "placeholder": "",
+   "section": "拖拽/点击上传您的作品集",
+   "sectionTrail": [
+    "拖拽/点击上传您的作品集",
+    "作品链接",
+    "作品描述",
+    "可上传相关作品集展示",
+    "作品集"
+   ],
+   "hint": ""
+  }
+ ]
+}

@@ -1,0 +1,73 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<title>网申自动填写</title>
+<link rel="stylesheet" href="sidepanel.css">
+</head>
+<body>
+  <header>
+    <h1>网申自动填写</h1>
+    <span id="status" class="status" title="本地服务状态"><span class="dot"></span><span id="status-text">连接中…</span></span>
+    <a id="open-ui" class="link" href="http://127.0.0.1:8765/ui/" target="_blank" title="打开助手：资料、AI 接口">设置</a>
+  </header>
+
+  <section id="offline" class="card warn" hidden>
+    <strong>本地服务没有启动</strong>
+    <p>双击项目文件夹里的 <code>打开自动填写助手.bat</code>，保持助手窗口开着，然后点
+      <button id="retry" class="link">重新连接</button></p>
+  </section>
+
+  <section class="card">
+    <div class="row">
+      <div>
+        <div id="company" class="company">当前页面</div>
+        <div id="ats" class="muted"></div>
+      </div>
+    </div>
+    <label class="field" id="resume-row" hidden>
+      <span>使用简历</span>
+      <select id="resume-pick"></select>
+    </label>
+    <label class="field">
+      <span>内推码</span>
+      <input id="referral" placeholder="链接或投递表里找不到时手动填" autocomplete="off">
+    </label>
+  </section>
+
+  <section class="card options">
+    <label><input type="checkbox" id="opt-upload"> 先上传简历 <span id="resume-name" class="muted"></span></label>
+    <label><input type="checkbox" id="opt-overwrite"> 覆盖页面上和资料不一致的值</label>
+    <label><input type="checkbox" id="opt-llm"> 规则认不出时用 <span id="llm-name">LLM</span> 判断</label>
+    <label><input type="checkbox" id="opt-save"> 填完点各分区的「保存」<span class="muted">（OPPO 这类；不会点提交 / 投递）</span></label>
+  </section>
+
+  <div class="actions">
+    <button id="fill" class="primary">填写本页</button>
+    <button id="preview">只预览</button>
+    <button id="stop" hidden>停止</button>
+  </div>
+  <div id="progress" class="progress" hidden></div>
+  <div id="jobs" class="muted" hidden></div>
+  <div id="notice" class="notice" hidden></div>
+
+  <section id="result" hidden>
+    <div id="chips" class="chips"></div>
+    <div id="upload-note" class="muted"></div>
+    <ul id="sections" class="list plain"></ul>
+    <h2 id="todo-title">需要你处理</h2>
+    <ul id="todo" class="list"></ul>
+    <h2 id="unused-title">这张表没地方填的资料</h2>
+    <ul id="unused" class="list plain"></ul>
+    <p class="tip">工具不会点提交。请逐项检查，确认无误后自己提交。表单分多页时，翻页后再点一次「填写本页」。</p>
+  </section>
+
+  <footer>
+    <button id="diag" class="link">导出诊断</button>
+    <span class="muted">有字段填不上时点这个：会逐个打开下拉框记录结构（不填值），存到本地 runs/ 给开发者看</span>
+  </footer>
+
+  <script src="flow.js"></script>
+  <script src="sidepanel.js"></script>
+</body>
+</html>

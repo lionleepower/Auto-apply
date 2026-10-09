@@ -1,0 +1,12 @@
+{
+  "oppo": {
+    "url": "https://careers.oppo.com/university/oppo/center/resume?positionId=1880",
+    "referral": "",
+    "note": "Element Plus；分区编辑式表单（点铅笔进入编辑，每个分区单独「保存」）；测试时加 --save"
+  },
+  "iflytek": {
+    "url": "https://iflytek.zhiye.com/form?fromPage=job&jobAdId=<职位 id>",
+    "referral": "",
+    "note": "北森 phoenix；div 单选、地区选择器、带「确定」的多选；页面加载慢（十几秒）"
+  }
+}
